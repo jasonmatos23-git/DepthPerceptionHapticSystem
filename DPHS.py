@@ -5,8 +5,13 @@
 
 import sys
 from system.system import System
+from system.scheduler import Scheduler
+from system.hardware_interrupt import HardwareInterrupt
 
 def main() -> int:
+	DPHS: System = System()
+	scheduler: Scheduler = Scheduler(DPHS.serviceContainer)
+	hinterrupt: HardwareInterrupt = HardwareInterrupt(DPHS.routineContainer)
 	return 0
 
 if __name__ == "__main__" :
