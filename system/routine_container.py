@@ -5,6 +5,7 @@
 
 from system.models.executable import Executable
 from system.models.container import Container
+from system.routines.routinelist import *
 from system.mode import State
 from system.API.Output import Output
 from typing import Dict
@@ -12,7 +13,7 @@ from typing import Dict
 # Manages instantiation specific to routines
 class RoutineContainer(Container) :
 
-	classMap: Dict[str, type] = {}	# TODO: Better way to list routines
+	classMap: Dict[str, type] = routinelist
 
 	# System instance of State passed to allow Scheduler
 	# to poll state via system, to avoid circular dependence

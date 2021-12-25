@@ -6,13 +6,14 @@
 from system.routine_container import RoutineContainer
 from system.models.executable import Executable
 from system.models.container import Container
+from system.services.servicelist import *
 from system.API.Input import Input
 from typing import Dict
 
 # Manages instantiation specific to services
 class ServiceContainer(Container) :
 
-	classMap: Dict[str, type] = {}	# TODO: Better way to list services
+	classMap: Dict[str, type] = servicelist
 
 	# System instance of RoutineContainer passed to connect
 	# services to their routines when running _newExecutable
