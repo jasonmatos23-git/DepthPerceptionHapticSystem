@@ -9,10 +9,13 @@ from system.mode import State
 from system.API.Output import Output
 from typing import Dict
 
+# Manages instantiation specific to routines
 class RoutineContainer(Container) :
 
 	classMap: Dict[str, type] = {}	# TODO: Better way to list routines
 
+	# System instance of State passed to allow Scheduler
+	# to poll state via system, to avoid circular dependence
 	def __init__(self, state: State) :
 		self.instanceMap: Dict[str, Executable] = {}
 		self.output_: Output = Output()

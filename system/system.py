@@ -7,6 +7,8 @@ from system.mode import State
 from system.routine_container import RoutineContainer
 from system.service_container import ServiceContainer
 
+# Contains references to instance of RoutineContainer (formerly SystemRoutine),
+# ServiceContainer (formerly SystemService), and State (formerly System/DPHS)
 class System :
 
 	def __init__(self) :

@@ -9,10 +9,13 @@ from system.models.container import Container
 from system.API.Input import Input
 from typing import Dict
 
+# Manages instantiation specific to services
 class ServiceContainer(Container) :
 
 	classMap: Dict[str, type] = {}	# TODO: Better way to list services
 
+	# System instance of RoutineContainer passed to connect
+	# services to their routines when running _newExecutable
 	def __init__(self, routineContainer: RoutineContainer) :
 		self.instanceMap: Dict[str, Executable] = {}
 		self.input_: Input = Input()
