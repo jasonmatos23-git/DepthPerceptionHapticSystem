@@ -24,5 +24,5 @@ class ServiceContainer(Container) :
 	def _newExecutable(self, clss: type) -> Executable:
 		return clss(self.input_, self.routineContainer)
 
-	def GetService(self, name: str) :
+	def GetService(self, name: str) -> Executable:
 		return self._getExecutable(name)

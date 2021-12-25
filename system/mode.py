@@ -15,8 +15,8 @@ class State :
 	def __init__(self) :
 		self.state: DPHSMode = DPHSMode.GENERAL
 
-	def getMode() -> DPHSMode :
+	def getMode() -> DPHSMode:
 		return self.state
 
-	def setMode(mode: DPHSMode) -> None :
+	def setMode(mode: DPHSMode) -> None:
 		self.state = mode

@@ -24,5 +24,5 @@ class RoutineContainer(Container) :
 	def _newExecutable(self, clss: type) -> Executable:
 		return clss(self.output_, self.state)
 
-	def GetRoutine(self, name: str) :
+	def GetRoutine(self, name: str) -> Executable:
 		return self._getExecutable(name)
