@@ -3,10 +3,6 @@
 # File name:		depth_perception_service.py
 # Description:		Apply depth perception TFLite model
 
-# Code modified from https://tfhub.dev/intel/lite-model/midas/v2_1_small/1/lite/1
-# TFLite model used without modification.
-# Licenced under MIT License
-
 # from system.models.service import Service
 # from system.models.routine import Routine
 # from system.API.Input import Input
