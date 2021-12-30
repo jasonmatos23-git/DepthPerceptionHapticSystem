@@ -14,7 +14,7 @@
 
 import cv2
 from depthmodel.depthmodel import DepthModel
-from numpy import float32 as float32, uint8 as uint8, empty as empty
+from numpy import float32, uint8, empty
 from picamera import PiCamera	# This should be offloaded to input component
 from time import sleep
 
@@ -28,20 +28,16 @@ class DepthPerceptionService :
 		self.depthModel = DepthModel()
 
 	def Execute(self) -> None:
-
 		with PiCamera() as camera:
 			camera.resolution = (640, 480)
 			camera.framerate = 24
-			for i in range(10, 1, -1) :
+			for i in range(10, 0, -1) :
 				print(i)
 				sleep(1)
-			print("Taking picture")
+			print("Capturing image")
 			img = empty((480 * 640 * 3,), dtype=uint8)
-			camera.capture(img, 'rgb')
-			img = img.reshape((480, 640, 3))
-
-			img_out = self.depthModel.RunInference(img)
-
+			camera.capture(img, format="rgb", use_video_port=True)
+			img_out = self.depthModel.RunInference(img.reshape((480, 640, 3)))
 			cv2.imwrite("output.png", img_out)
 
 dps = DepthPerceptionService()
