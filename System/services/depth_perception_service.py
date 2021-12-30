@@ -37,7 +37,7 @@ class DepthPerceptionService :
 				sleep(1)
 			print("Taking picture")
 			img = empty((480 * 640 * 3,), dtype=uint8)
-			camera.capture(img, 'bgr')
+			camera.capture(img, 'rgb')
 			img = img.reshape((480, 640, 3))
 
 			img_out = self.depthModel.RunInference(img)
