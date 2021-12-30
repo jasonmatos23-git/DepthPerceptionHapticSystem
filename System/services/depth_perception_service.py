@@ -12,10 +12,11 @@
 # from system.API.Input import Input
 # from system.routine_container import RoutineContainer
 
+from Input import Input
+
 import cv2
 from depthmodel.depthmodel import DepthModel
-from numpy import float32, uint8, empty
-from picamera import PiCamera	# This should be offloaded to input component
+from numpy import ndarray
 from time import sleep
 
 class DepthPerceptionService :
@@ -24,21 +25,15 @@ class DepthPerceptionService :
 	# 	self.input_: Input = input_
 	# 	self.routine: Routine = routineContainer.GetRoutine("TemplateRoutine")
 
-	def __init__(self) :
+	def __init__(self, input_: Input) :
 		self.depthModel = DepthModel()
+		self.input_: Input = input_
 
 	def Execute(self) -> None:
-		with PiCamera() as camera:
-			camera.resolution = (640, 480)
-			camera.framerate = 24
-			for i in range(10, 0, -1) :
-				print(i)
-				sleep(1)
-			print("Capturing image")
-			img = empty((480 * 640 * 3,), dtype=uint8)
-			camera.capture(img, format="rgb", use_video_port=True)
-			img_out = self.depthModel.RunInference(img.reshape((480, 640, 3)))
-			cv2.imwrite("output.png", img_out)
-
-dps = DepthPerceptionService()
-dps.Execute()
+		for i in range(10, 0, -1) :
+			print(i)
+			sleep(1)
+		print("Capturing image")
+		img: ndarray = self.input_.GetCameraImage()
+		img_out: ndarray = self.depthModel.RunInference(img.reshape((480, 640, 3)))
+		cv2.imwrite("output.png", img_out)
