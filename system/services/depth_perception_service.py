@@ -5,10 +5,8 @@
 
 # from system.models.service import Service
 # from system.models.routine import Routine
-# from system.API.Input import Input
+from system.API.Input import Input
 # from system.routine_container import RoutineContainer
-
-from Input import Input
 
 import cv2
 from depthmodel.depthmodel import DepthModel
@@ -32,4 +30,5 @@ class DepthPerceptionService :
 		print("Capturing image")
 		img: ndarray = self.input_.GetCameraImage()
 		img_out: ndarray = self.depthModel.RunInference(img.reshape((480, 640, 3)))
+		# Write output for demonstration, should eventually be replaced with call to routine
 		cv2.imwrite("output.png", img_out)
