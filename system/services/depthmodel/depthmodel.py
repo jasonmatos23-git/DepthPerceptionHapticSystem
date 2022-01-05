@@ -29,12 +29,14 @@ class DepthModel :
 		return filt
 
 	def __init__(self) :
-		self._interpreter = tflite.Interpreter(model_path="model_opt.tflite")
+		self._interpreter = tflite.Interpreter(model_path="system/services/depthmodel/model_opt.tflite")
 		self._mean = [0.485, 0.456, 0.406]
 		self._std = [0.229, 0.224, 0.225]
 
 	# Get depth map from an image
 	def RunInference(self, img) :
+		# Write image for demo
+		cv2.imwrite("input.png", cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
 		# Create input tensor
 		img = img / 255.0
 		img_input = cv2.resize(img, (256,256), interpolation=cv2.INTER_CUBIC)
@@ -50,6 +52,11 @@ class DepthModel :
 		self._interpreter.invoke()
 		output = self._interpreter.get_tensor(output_details[0]['index'])
 		output = output.reshape(256, 256)
+		# Writing result for demo
+		depth_min = output.min()
+		depth_max = output.max()
+		img_out = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
+		cv2.imwrite("output256.png", img_out)
 		# Downsizing result
 		prediction = cv2.resize(output, (4, 4), interpolation=cv2.INTER_NEAREST)
 		depth_min = prediction.min()

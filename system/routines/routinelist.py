@@ -5,9 +5,11 @@
 
 # Import service code
 # from system.routines.templateroutine import *
+from system.routines.depth_perception_routine import *
 
 # JSON connect name to routine
 routinelist = \
 {
 #	"TemplateRoutine" : TemplateRoutine
+	"DepthPerceptionRoutine" : DepthPerceptionRoutine
 }
