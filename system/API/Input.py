@@ -19,29 +19,29 @@ class Input :
 		sleep(2)	# Camera setup time
 		return camera
 
-	def __init__(self) :
+	def __init__(self) -> None:
 		self._camera: PiCamera = self._initCamera()
 
 	# DESTRUCTION FUNCTIONS
 
-	def _delCamera(self) :
+	def _delCamera(self) -> None:
 		if not (self._camera is None) :
 			self._camera.close()
 			self._camera = None
 
-	def __del__(self) :
+	def __del__(self) -> None:
 		self._delCamera()
 
 	# PUBLIC FUNCTIONS
 
-	def EnableCamera(self) :
+	def EnableCamera(self) -> None:
 		if self._camera is None :
-			self._camera = _initCamera()
+			self._camera: PiCamera = _initCamera()
 
-	def DisableCamera(self) :
+	def DisableCamera(self) -> None:
 		self._delCamera()
 
 	def GetCameraImage(self) -> ndarray:
-		img: ndarray = empty((480 * 640 * 3,), dtype=uint8)
+		img: ndarray = empty((self._camera.resolution[1] * self._camera.resolution[0] * 3,), dtype=uint8)
 		self._camera.capture(img, format="rgb", use_video_port=True)
-		return img
+		return img.reshape((self._camera.resolution[1], self._camera.resolution[0], 3))
