@@ -18,7 +18,9 @@ class DepthPerceptionRoutine(Routine) :
 	# 1:1 map between sections of image to output
 	# Currently set to a linear continuous map
 	def Execute(self, depth_map: ndarray) -> None:
-		depth_map = depth_map / 255.0
+		depth_map: ndarray = depth_map / 255.0
+		i: int
+		j: int
 		for i in range(0, 4) :
 			for j in range(0, 4) :
 				self.output_.setDutyCycle(4*i + j, depth_map[i, j])
