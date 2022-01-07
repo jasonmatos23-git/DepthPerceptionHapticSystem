@@ -16,7 +16,7 @@ class Scheduler :
 		self.depthService = serviceContainer.GetService("DepthPerceptionService")
 
 	def Run(self) :
-		while(1)
+		while(1) :
 			self.depthService.Execute()
 			sleep(5)
 
