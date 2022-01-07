@@ -46,7 +46,7 @@ class Output :
 	def setDutyCycle(self, index, dc) :
 		if dc >= 50 :
 			dc = 100
-		else
+		else :
 			dc = 0
 		self._nonant[index].ChangeDutyCycle(dc)
 		# self._nonant[index] = dc
