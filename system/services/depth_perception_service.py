@@ -29,7 +29,7 @@ class DepthPerceptionService :
 		# Write output for demonstration
 		sqred = (img_out/255.0)**2
 		sqred = (255 * sqred).astype("uint8")
+		cv2.imwrite("output_sqred.png", sqred)
 		cv2.imwrite("output.png", sqred)
-		return None
 		# Call routine
 		self.routine.Execute(img_out)
