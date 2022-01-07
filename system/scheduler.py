@@ -7,6 +7,8 @@ from system.service_container import ServiceContainer
 from system.models.service import Service
 from system.mode import State
 
+from time import sleep
+
 class Scheduler :
 
 	def __init__(self, serviceContainer: ServiceContainer, state: State) :
@@ -14,5 +16,7 @@ class Scheduler :
 		self.depthService = serviceContainer.GetService("DepthPerceptionService")
 
 	def Run(self) :
-		self.depthService.Execute()
+		while(1)
+			self.depthService.Execute()
+			sleep(5)
 
