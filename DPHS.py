@@ -10,8 +10,9 @@ from system.hardware_interrupt import HardwareInterrupt
 
 def main() -> int:
 	DPHS: System = System()
-	scheduler: Scheduler = Scheduler(DPHS.serviceContainer)
+	scheduler: Scheduler = Scheduler(DPHS.serviceContainer, DPHS.state)
 	hinterrupt: HardwareInterrupt = HardwareInterrupt(DPHS.routineContainer)
+	scheduler.Run()
 	return 0
 
 if __name__ == "__main__" :
