@@ -13,7 +13,11 @@ class Input :
 	# INITIATION FUNCTIONS
 
 	def _initCamera(self) -> PiCamera:
-		camera: PiCamera = PiCamera()
+		try :
+			camera: PiCamera = PiCamera()
+		except BaseException as err :
+			print(err)
+			exit(1)
 		camera.resolution = (640, 480)
 		camera.framerate = 24
 		sleep(2)	# Camera setup time
