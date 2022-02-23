@@ -20,8 +20,12 @@ class Input :
 		sleep(2)	# Camera setup time
 		return camera
 
+	def _initForwardLidar(self) -> SMBus:
+		return SMBus(1)	# Hardcoded I2C bus 1 for TESTING
+
 	def __init__(self) -> None:
 		self._camera: PiCamera = self._initCamera()
+		self._forwardLidar: SMBus = self._initForwardLidar()
 
 	# DESTRUCTION FUNCTIONS
 
@@ -30,11 +34,18 @@ class Input :
 			self._camera.close()
 			self._camera = None
 
+	def _delForwardLidar(self) -> None:
+		if not (self._forwardLidar is None) :
+			self._forwardLidar.close()
+			self._forwardLidar = None
+
 	def __del__(self) -> None:
 		self._delCamera()
+		self._delForwardLidar()
 
 	# PUBLIC FUNCTIONS
 
+	# Camera
 	def EnableCamera(self) -> None:
 		if self._camera is None :
 			self._camera: PiCamera = _initCamera()
@@ -46,3 +57,10 @@ class Input :
 		img: ndarray = empty((self._camera.resolution[1] * self._camera.resolution[0] * 3,), dtype=uint8)
 		self._camera.capture(img, format="rgb", use_video_port=True)
 		return img.reshape((self._camera.resolution[1], self._camera.resolution[0], 3))
+
+	# Forward lidar
+	def _getForwardLidarRaw(self) -> bytes:
+		pass
+
+	def GetForwardLidar(self) -> list:
+		pass
