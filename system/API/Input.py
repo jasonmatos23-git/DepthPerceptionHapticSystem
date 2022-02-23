@@ -2,14 +2,22 @@
 # Course:			EEL 4915L Senior Design II, UCF Spring 2022
 # File name:		Input.py
 # Description:		Connects input hardware to software components.
+# Note:				TFMini-S MUST be configured to I2C mode over UART first.
 
 # Imports for camera
 from picamera import PiCamera
 from numpy import empty, ndarray, uint8
 from time import sleep
 from smbus2 import SMBus, i2c_msg
+from binascii import hexlify
 
 class Input :
+
+	# Class variables
+	_forwardLidarAddress: int = 0x10
+	_reqForwardLidar: i2c_msg = i2c_msg.write(_forwardLidarAddress, \
+	[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
+	_resForwardLidar: i2c_msg = i2c_msg.read(_forwardLidarAddress, 9) # 9 result bytes
 
 	# INITIATION FUNCTIONS
 
@@ -60,7 +68,10 @@ class Input :
 
 	# Forward lidar
 	def _getForwardLidarRaw(self) -> bytes:
-		pass
+		self._forwardLidar.i2c_rdwr(self._reqForwardLidar)
+		sleep(0.001)
+		self._forwardLidar.i2c_rdwr(self._resForwardLidar)
+		return hexlify(str(self._resForwardLidar).encode())
 
 	def GetForwardLidar(self) -> list:
 		pass
