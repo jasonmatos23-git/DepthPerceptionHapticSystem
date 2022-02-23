@@ -7,6 +7,7 @@
 from picamera import PiCamera
 from numpy import empty, ndarray, uint8
 from time import sleep
+from smbus2 import SMBus, i2c_msg
 
 class Input :
 
