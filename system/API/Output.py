@@ -1,4 +1,4 @@
-# Primary Author:	<FirstName LastName (email)>
+# Primary Author:	Christa  Lawrence Cal47day@gmail.com
 # Course:			EEL 4915L Senior Design II, UCF Spring 2022
 # File name:		Output.py
 # Description:		Connects software components to output hardware.
