@@ -67,11 +67,15 @@ class Input :
 		return img.reshape((self._camera.resolution[1], self._camera.resolution[0], 3))
 
 	# Forward lidar
-	def _getForwardLidarRaw(self) -> bytes:
+	def _getForwardLidarRaw(self) -> None:
 		self._forwardLidar.i2c_rdwr(self._reqForwardLidar)
 		sleep(0.001)
 		self._forwardLidar.i2c_rdwr(self._resForwardLidar)
-		return hexlify(str(self._resForwardLidar).encode())
+
+	def _filteredForwardLidar(self) -> list:
+		self._getForwardLidarRaw()
+		res: i2c_msg = self._resForwardLidar
+		return [(256 * int.from_bytes(res.buf[3], "big")) + int.from_bytes(res.buf[2], "big")]
 
 	def GetForwardLidar(self) -> list:
 		pass
