@@ -58,15 +58,15 @@ class DepthModel :
 		self._output_tensor.copyToHostTensor(tmp_output)
 		output: ndarray = tmp_output.getNumpyData()
 		# Write result for demo
-		depth_min: float32 = output.min()
-		depth_max: float32 = output.max()
-		img_out: ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
-		cv2.imwrite("output256.png", img_out)
+		# depth_min: float32 = output.min()
+		# depth_max: float32 = output.max()
+		# img_out: ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
+		# cv2.imwrite("output256.png", img_out)
 		# Downsizing result
 		output: ndarray = cv2.resize(output, self._resolution, interpolation=cv2.INTER_NEAREST)
-		depth_min: float32 = output.min()
-		depth_max: float32 = output.max()
-		# LiDAR measurement may be useful for following line
-		img_out: ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
+		# depth_min: float32 = output.min()
+		# depth_max: float32 = output.max()
+		# # LiDAR measurement may be useful for following line
+		# img_out: ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
 
-		return img_out
+		return output
