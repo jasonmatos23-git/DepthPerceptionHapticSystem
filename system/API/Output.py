@@ -7,27 +7,16 @@
 
 from numpy import zeros, ndarray
 from enum import Enum, auto
+from system.API.PWM import PWM
 
 class Output :
 
-	# Replace 'auto' with GPIO numbers or internal I2C address
-	# (decimal) for PWM driver
-	class MotorLocation(Enum) :
-		UPPER_LEFT = auto()
-		UPPER_MIDDLE = auto()
-		UPPER_RIGHT = auto()
-		MIDDLE_LEFT = auto()
-		MIDDLE = auto()
-		MIDDLE_RIGHT = auto()
-		LOWER_LEFT = auto()
-		LOWER_MIDDLE = auto()
-		LOWER_RIGHT = auto()
-
 	def __init__(self) :
-		self._nonant: ndarray = zeros(4*4)	# Holds values for duty cycle
+		self._pwm = PWM()
 
-	def setDutyCycle(self, index, dc) :
-		self._nonant[index] = dc
+	def setDutyCycle(self, location, value) :
+		# Can use this function to discretize
+		self._pwm.setDutyCycle(location, value)
 
 	def printDutyCycles(self) :
-		print(self._nonant.reshape((4, 4)))
+		pass
