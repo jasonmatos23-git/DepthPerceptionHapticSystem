@@ -14,7 +14,7 @@ class Input :
 
 	def _initCamera(self) -> PiCamera:
 		camera: PiCamera = PiCamera()
-		camera.resolution = (640, 480)
+		camera.resolution = (256, 256)
 		camera.framerate = 24
 		sleep(2)	# Camera setup time
 		return camera
