@@ -9,7 +9,6 @@ from picamera import PiCamera
 from numpy import empty, ndarray, uint8
 from time import sleep
 from smbus2 import SMBus, i2c_msg
-from binascii import hexlify
 
 class Input :
 
@@ -72,10 +71,20 @@ class Input :
 		sleep(0.001)
 		self._forwardLidar.i2c_rdwr(self._resForwardLidar)
 
-	def _filteredForwardLidar(self) -> list:
+	def _filteredForwardLidar(self) -> int:
 		self._getForwardLidarRaw()
 		res: i2c_msg = self._resForwardLidar
-		return [(256 * int.from_bytes(res.buf[3], "big")) + int.from_bytes(res.buf[2], "big")]
+		return (256 * int.from_bytes(res.buf[3], "big")) + int.from_bytes(res.buf[2], "big")
 
 	def GetForwardLidar(self) -> list:
-		pass
+		result: int = self._filteredForwardLidar()
+		if result >= 0 :
+			return result
+		elif result == -1 :
+			raise RuntimeError("Unstable signal (strength < 100)")
+		elif result == -2 :
+			raise RuntimeError("Signal strength saturation")
+		elif result == -4 :
+			raise RuntimeError("Ambient light saturation")
+		else :
+			raise RuntimeError("Unknown error in LiDAR result")
