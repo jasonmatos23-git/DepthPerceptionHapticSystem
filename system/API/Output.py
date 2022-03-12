@@ -17,6 +17,3 @@ class Output :
 	def setDutyCycle(self, location, value) :
 		# Can use this function to discretize
 		self._pwm.setDutyCycle(location, value)
-
-	def printDutyCycles(self) :
-		pass
