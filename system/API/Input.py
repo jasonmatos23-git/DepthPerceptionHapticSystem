@@ -4,51 +4,30 @@
 # Description:		Connects input hardware to software components.
 
 # Imports for camera
-from picamera import PiCamera
-from numpy import empty, ndarray, uint8
-from time import sleep
+from numpy import ndarray
 from system.API.modules.LiDAR import LiDAR
+from system.API.modules.camera import Camera
 
 class Input :
 
-	# INITIATION FUNCTIONS
-
-	def _initCamera(self) -> PiCamera:
-		camera: PiCamera = PiCamera()
-		camera.resolution = (256, 256)
-		camera.framerate = 24
-		sleep(2)	# Camera setup time
-		return camera
-
 	def __init__(self) -> None:
-		self._camera: PiCamera = self._initCamera()
+		self._camera: Camera = Camera()
 		self._lidar: LiDAR = LiDAR()
 
-	# DESTRUCTION FUNCTIONS
-
-	def _delCamera(self) -> None:
-		if not (self._camera is None) :
-			self._camera.close()
-			self._camera = None
-
 	def __del__(self) -> None:
-		self._delCamera()
+		del(self._camera)
 		del(self._lidar)
 
 	# PUBLIC FUNCTIONS
-
 	# Camera
 	def EnableCamera(self) -> None:
-		if self._camera is None :
-			self._camera: PiCamera = _initCamera()
+		self._camera.Enable()
 
 	def DisableCamera(self) -> None:
-		self._delCamera()
+		self._camera.Disable()
 
 	def GetCameraImage(self) -> ndarray:
-		img: ndarray = empty((self._camera.resolution[1] * self._camera.resolution[0] * 3,), dtype=uint8)
-		self._camera.capture(img, format="rgb", use_video_port=True)
-		return img.reshape((self._camera.resolution[1], self._camera.resolution[0], 3))
+		return self._camera.GetCameraImage()
 
 	# Lidar
 	def GetForwardLidar(self) -> int:
