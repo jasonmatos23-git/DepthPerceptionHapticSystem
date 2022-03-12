@@ -1,3 +1,8 @@
+# Primary Author:	Cristopher Matos (jasonmatos23@gmail.com)
+# Course:			EEL 4915L Senior Design II, UCF Spring 2022
+# File name:		PWM.py
+# Description:		Provides functions for interacting with PCA9685.
+
 from smbus2 import SMBus
 from enum import Enum, auto
 

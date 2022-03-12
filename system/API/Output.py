@@ -3,8 +3,6 @@
 # File name:		Output.py
 # Description:		Connects software components to output hardware.
 
-# import RPi.GPIO as GPIO
-
 from numpy import zeros, ndarray
 from enum import Enum, auto
 from system.API.PWM import PWM
