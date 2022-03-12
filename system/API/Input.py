@@ -15,7 +15,7 @@ class Input :
 	# Class variables
 	_forwardLidarAddress: int = 0x10
 	_reqForwardLidar: i2c_msg = i2c_msg.write(_forwardLidarAddress, \
-	[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
+		[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
 	_resForwardLidar: i2c_msg = i2c_msg.read(_forwardLidarAddress, 9) # 9 result bytes
 
 	# INITIATION FUNCTIONS
@@ -68,7 +68,7 @@ class Input :
 	# Forward lidar
 	def _getForwardLidarRaw(self) -> None:
 		self._forwardLidar.i2c_rdwr(self._reqForwardLidar)
-		sleep(0.001)
+		sleep(0.001)	# Recommended wait time for result
 		self._forwardLidar.i2c_rdwr(self._resForwardLidar)
 
 	def _filteredForwardLidar(self) -> int:
