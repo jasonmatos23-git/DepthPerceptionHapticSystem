@@ -80,5 +80,5 @@ class PWM :
 				value & 0x0ff)	# Write lower 8 bits to OFF_L
 
 	def setAllDutyCycle(self, value: int) -> None:
-		for motor in LocationRegisterMap.keys() :
-			setDutyCycle(motor, value)
+		for motor in PWM.LocationRegisterMap.keys() :
+			self.setDutyCycle(motor, value)
