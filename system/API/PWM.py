@@ -65,11 +65,11 @@ class PWM :
 	def __init__(self) :
 		self._bus: SMBus = SMBus(1)
 		self._address: int = 0x40
-		self._bus.write_byte_data(self._address, _Registers.MODE1, 0x00) # Enable normal mode, disable all-call
+		self._bus.write_byte_data(self._address, _Registers.MODE1.value, 0x00) # Enable normal mode, disable all-call
 		self._initializePWM()
 
 	def __del__(self) :
-		self._bus.write_byte_data(self._address, _Registers.MODE1, 0x10) # Re-enable sleep mode
+		self._bus.write_byte_data(self._address, _Registers.MODE1.value, 0x10) # Re-enable sleep mode
 		self._bus.close()
 
 	def setDutyCycle(self, location: Motor, value: int) -> None:
