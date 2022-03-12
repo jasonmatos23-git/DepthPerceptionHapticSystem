@@ -7,6 +7,7 @@
 from picamera import PiCamera
 from numpy import empty, ndarray, uint8
 from time import sleep
+from system.API.LiDAR import LiDAR
 
 class Input :
 
@@ -21,6 +22,7 @@ class Input :
 
 	def __init__(self) -> None:
 		self._camera: PiCamera = self._initCamera()
+		self._lidar: LiDAR = LiDAR()
 
 	# DESTRUCTION FUNCTIONS
 
@@ -31,9 +33,11 @@ class Input :
 
 	def __del__(self) -> None:
 		self._delCamera()
+		del(self._lidar)
 
 	# PUBLIC FUNCTIONS
 
+	# Camera
 	def EnableCamera(self) -> None:
 		if self._camera is None :
 			self._camera: PiCamera = _initCamera()
@@ -45,3 +49,10 @@ class Input :
 		img: ndarray = empty((self._camera.resolution[1] * self._camera.resolution[0] * 3,), dtype=uint8)
 		self._camera.capture(img, format="rgb", use_video_port=True)
 		return img.reshape((self._camera.resolution[1], self._camera.resolution[0], 3))
+
+	# Lidar
+	def GetForwardLidar(self) -> int:
+		return self._lidar.GetForwardLidar()
+
+	def GetAngledLidar(self) -> int:
+		return self._lidar.GetAngledLidar()
