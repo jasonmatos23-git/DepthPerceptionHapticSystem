@@ -5,7 +5,7 @@
 
 from numpy import zeros, ndarray
 from enum import Enum, auto
-from system.API.PWM import PWM
+from system.API.PWM import PWM, Motor
 
 class Output :
 
