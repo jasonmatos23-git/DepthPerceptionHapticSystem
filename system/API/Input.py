@@ -7,7 +7,7 @@
 from picamera import PiCamera
 from numpy import empty, ndarray, uint8
 from time import sleep
-from system.API.LiDAR import LiDAR
+from system.API.modules.LiDAR import LiDAR
 
 class Input :
 
