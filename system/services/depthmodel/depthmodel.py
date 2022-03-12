@@ -1,14 +1,15 @@
 # Primary Author:	Cristopher Matos (jasonmatos23@gmail.com)
 # Course:			EEL 4915L Senior Design II, UCF Spring 2022
 # File name:		depthmodel.py
-# Description:		Apply depth perception TFLite model
+# Description:		Apply depth perception model
 
-# Code modified from https://tfhub.dev/intel/lite-model/midas/v2_1_small/1/lite/1
-# TFLite model used without modification.
-# Licenced under MIT License
+# Code adapted from https://tfhub.dev/intel/lite-model/midas/v2_1_small/1/lite/1
+# and https://github.com/alibaba/MNN/blob/master/pymnn/examples/MNNEngineDemo/mobilenet_demo.py.
+# Model model_opt.tflite retrieved from https://github.com/isl-org/MiDaS/releases/tag/v2_1,
+# and converted to *.mnn
 
+import MNN
 import cv2
-import tflite_runtime.interpreter as tflite
 from numpy import float32, uint8, empty, exp, ndarray
 
 class DepthModel :
@@ -31,7 +32,10 @@ class DepthModel :
 		return filt
 
 	def __init__(self, resolution: tuple) -> None:
-		self._interpreter: tflite.Interpreter = tflite.Interpreter(model_path="system/services/depthmodel/model_opt.tflite")
+		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt.mnn")
+		self._session: MNN.Session = self._interpreter.createSession()
+		self._input_tensor: MNN.Tensor = self._interpreter.getSessionInput(self._session)
+		self._output_tensor: MNN.Tensor = self._interpreter.getSessionOutput(self._session)
 		self._mean: list = [0.485, 0.456, 0.406]
 		self._std: list = [0.229, 0.224, 0.225]
 		self._resolution: tuple = resolution
@@ -42,26 +46,27 @@ class DepthModel :
 		img: ndarray = img / 255.0
 		img_input: ndarray = cv2.resize(img, (256,256), interpolation=cv2.INTER_CUBIC)
 		img_input = (img_input - self._mean) / self._std
-		tensor: ndarray = img_input.reshape(1,256,256,3).astype(float32)
-		# Load model
-		self._interpreter.allocate_tensors()
-		input_details: list = self._interpreter.get_input_details()
-		output_details: list = self._interpreter.get_output_details()
+		tmp_input: MNN.Tensor = MNN.Tensor((1,256,256,3), MNN.Halide_Type_Float, \
+			img_input.astype(float32), MNN.Tensor_DimensionType_Tensorflow)
+		# Load input
+		self._input_tensor.copyFrom(tmp_input)
 		# Inference
-		self._interpreter.set_tensor(input_details[0]['index'], tensor)
-		self._interpreter.invoke()
-		output: ndarray = self._interpreter.get_tensor(output_details[0]['index'])
-		output = output.reshape(256, 256)
-		# Writing result for demo
-		depth_min: float32 = output.min()
-		depth_max: float32 = output.max()
-		img_out: ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
-		cv2.imwrite("output256.png", img_out)
+		self._interpreter.runSession(self._session)
+		# Get output
+		tmp_output: MNN.Tensor = MNN.Tensor((256,256), MNN.Halide_Type_Float, \
+			empty((1,256,256,1), dtype=float32), MNN.Tensor_DimensionType_Tensorflow)
+		self._output_tensor.copyToHostTensor(tmp_output)
+		output: ndarray = tmp_output.getNumpyData()
+		# Write result for demo
+		# depth_min: float32 = output.min()
+		# depth_max: float32 = output.max()
+		# img_out: ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
+		# cv2.imwrite("output256.png", img_out)
 		# Downsizing result
-		prediction: ndarray = cv2.resize(output, self._resolution, interpolation=cv2.INTER_NEAREST)
-		depth_min: float32 = prediction.min()
-		depth_max: float32 = prediction.max()
-		# LiDAR measurement may be useful for following line
-		img_out: ndarray = (255 * (prediction - depth_min) / (depth_max - depth_min)).astype("uint8")
+		output: ndarray = cv2.resize(output, self._resolution, interpolation=cv2.INTER_NEAREST)
+		# depth_min: float32 = output.min()
+		# depth_max: float32 = output.max()
+		# # LiDAR measurement may be useful for following line
+		# img_out: ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
 
-		return img_out
+		return output

@@ -6,8 +6,9 @@
 from system.models.routine import Routine
 from system.mode import State
 from system.API.Output import Output
+from system.API.PWM import PWM, Motor	# Used for Motor Enum
 
-from numpy import ndarray
+from numpy import ndarray, float32, uint8
 
 class DepthPerceptionRoutine(Routine) :
 
@@ -18,10 +19,15 @@ class DepthPerceptionRoutine(Routine) :
 	# 1:1 map between sections of image to output
 	# Currently set to a linear continuous map
 	def Execute(self, depth_map: ndarray) -> None:
-		depth_map: ndarray = depth_map / 255.0
-		i: int
-		j: int
-		for i in range(0, 4) :
-			for j in range(0, 4) :
-				self.output_.setDutyCycle(4*i + j, depth_map[i, j])
-		self.output_.printDutyCycles()
+		dmin = depth_map.min()
+		dmax = depth_map.max()
+		depth_map = (4095 * (depth_map - dmin) / (dmax - dmin)).astype("uint8")
+		self.output_.setDutyCycle(Motor.UPPER_LEFT, depth_map[0,0])
+		self.output_.setDutyCycle(Motor.UPPER_MIDDLE, depth_map[0,1])
+		self.output_.setDutyCycle(Motor.UPPER_RIGHT, depth_map[0,2])
+		self.output_.setDutyCycle(Motor.MIDDLE_LEFT, depth_map[1,0])
+		self.output_.setDutyCycle(Motor.MIDDLE, depth_map[1,1])
+		self.output_.setDutyCycle(Motor.MIDDLE_RIGHT, depth_map[1,2])
+		self.output_.setDutyCycle(Motor.LOWER_LEFT, depth_map[2,0])
+		self.output_.setDutyCycle(Motor.LOWER_MIDDLE, depth_map[2,1])
+		self.output_.setDutyCycle(Motor.LOWER_RIGHT, depth_map[2,2])

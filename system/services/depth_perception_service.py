@@ -16,17 +16,17 @@ from time import sleep
 class DepthPerceptionService :
 
 	def __init__(self, input_: Input, routineContainer: RoutineContainer) -> None:
-		self._depthModel = DepthModel((4, 4))
+		self._depthModel = DepthModel((3, 3))
 		self.input_: Input = input_
 		self.routine: Routine = routineContainer.GetRoutine("DepthPerceptionRoutine")
 
 	def Execute(self) -> None:
 		img: ndarray = self.input_.GetCameraImage()
 		# Write image for demo
-		cv2.imwrite("input.png", cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
+		# cv2.imwrite("input.png", cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
 		# Run model
 		img_out: ndarray = self._depthModel.RunInference(img)
 		# Write output for demonstration
-		cv2.imwrite("output.png", img_out)
+		# cv2.imwrite("output.png", img_out)
 		# Call routine
 		self.routine.Execute(img_out)
