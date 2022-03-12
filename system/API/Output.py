@@ -13,6 +13,9 @@ class Output :
 	def __init__(self, bus: SMBus) :
 		self._pwm: PWM = PWM(bus)
 
+	def __del__(self) :
+		del(self._pwm)
+
 	def setDutyCycle(self, location: Motor, value: int) -> None:
 		# Can use this function to discretize
 		self._pwm.setDutyCycle(location, value)
