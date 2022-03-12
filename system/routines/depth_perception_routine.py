@@ -6,7 +6,7 @@
 from system.models.routine import Routine
 from system.mode import State
 from system.API.Output import Output
-from system.API.PWM import PWM, Motor	# Used for Motor Enum
+from system.API.modules.PWM import PWM, Motor	# Used for Motor Enum
 
 from numpy import ndarray, float32, uint8
 
