@@ -19,29 +19,29 @@ class Motor(Enum) :
 	LOWER_MIDDLE = auto()
 	LOWER_RIGHT = auto()
 
-class PWM :
+# All for OFF. ON default of 0 is acceptable
+class _Registers(Enum) :
+	MODE1 = 0x00
+	LED0_L = 0x08
+	LED0 = 0x09
+	LED1_L = 0x0c
+	LED1 = 0x0d
+	LED2_L = 0x10
+	LED2 = 0x11
+	LED3_L = 0x14
+	LED3 = 0x15
+	LED4_L = 0x18
+	LED4 = 0x19
+	LED5_L = 0x1c
+	LED5 = 0x1d
+	LED6_L = 0x20
+	LED6 = 0x21
+	LED7_L = 0x24
+	LED7 = 0x25
+	LED8_L = 0x28
+	LED8 = 0x29
 
-	# All for OFF. ON default of 0 is acceptable
-	class _Registers(Enum) :
-		MODE1 = 0x00
-		LED0_L = 0x08
-		LED0 = 0x09
-		LED1_L = 0x0c
-		LED1 = 0x0d
-		LED2_L = 0x10
-		LED2 = 0x11
-		LED3_L = 0x14
-		LED3 = 0x15
-		LED4_L = 0x18
-		LED4 = 0x19
-		LED5_L = 0x1c
-		LED5 = 0x1d
-		LED6_L = 0x20
-		LED6 = 0x21
-		LED7_L = 0x24
-		LED7 = 0x25
-		LED8_L = 0x28
-		LED8 = 0x29
+class PWM :
 
 	# Index 0 maps to OFF_H, index 1 maps to OFF_L
 	LocationRegisterMap : Dict[Motor, List[_Registers]] = \
@@ -59,7 +59,7 @@ class PWM :
 
 	def _initializePWM(self) -> None:
 		# Go through each register and disable OFF mode
-		for reg in PWM._Registers :
+		for reg in _Registers :
 			self._bus.write_byte_data(self._address, reg.value, 0x00)
 
 	def __init__(self) :
