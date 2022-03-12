@@ -6,7 +6,7 @@
 from system.models.routine import Routine
 from system.mode import State
 from system.API.Output import Output
-from system.API.PWM import PWM	# Used for MotorLocation Enum
+from system.API.PWM import PWM, Motor	# Used for Motor Enum
 
 from numpy import ndarray, float32, uint8
 
@@ -22,12 +22,12 @@ class DepthPerceptionRoutine(Routine) :
 		dmin = depth_map.min()
 		dmax = depth_map.max()
 		depth_map = (4095 * (depth_map - dmin) / (dmax - dmin)).astype("uint8")
-		self.output_.setDutyCycle(PWM.MotorLocation.UPPER_LEFT, depth_map[0,0])
-		self.output_.setDutyCycle(PWM.MotorLocation.UPPER_MIDDLE, depth_map[0,1])
-		self.output_.setDutyCycle(PWM.MotorLocation.UPPER_RIGHT, depth_map[0,2])
-		self.output_.setDutyCycle(PWM.MotorLocation.MIDDLE_LEFT, depth_map[1,0])
-		self.output_.setDutyCycle(PWM.MotorLocation.MIDDLE, depth_map[1,1])
-		self.output_.setDutyCycle(PWM.MotorLocation.MIDDLE_RIGHT, depth_map[1,2])
-		self.output_.setDutyCycle(PWM.MotorLocation.LOWER_LEFT, depth_map[2,0])
-		self.output_.setDutyCycle(PWM.MotorLocation.LOWER_MIDDLE, depth_map[2,1])
-		self.output_.setDutyCycle(PWM.MotorLocation.LOWER_RIGHT, depth_map[2,2])
+		self.output_.setDutyCycle(Motor.UPPER_LEFT, depth_map[0,0])
+		self.output_.setDutyCycle(Motor.UPPER_MIDDLE, depth_map[0,1])
+		self.output_.setDutyCycle(Motor.UPPER_RIGHT, depth_map[0,2])
+		self.output_.setDutyCycle(Motor.MIDDLE_LEFT, depth_map[1,0])
+		self.output_.setDutyCycle(Motor.MIDDLE, depth_map[1,1])
+		self.output_.setDutyCycle(Motor.MIDDLE_RIGHT, depth_map[1,2])
+		self.output_.setDutyCycle(Motor.LOWER_LEFT, depth_map[2,0])
+		self.output_.setDutyCycle(Motor.LOWER_MIDDLE, depth_map[2,1])
+		self.output_.setDutyCycle(Motor.LOWER_RIGHT, depth_map[2,2])
