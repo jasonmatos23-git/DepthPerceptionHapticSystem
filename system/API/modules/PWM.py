@@ -81,4 +81,4 @@ class PWM :
 
 	def setAllDutyCycle(self, value: int) -> None:
 		for motor in PWM.LocationRegisterMap.keys() :
-			setDutyCycle(motor, value)
+			self.setDutyCycle(motor, value)
