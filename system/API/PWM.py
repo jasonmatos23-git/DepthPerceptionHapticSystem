@@ -5,6 +5,7 @@
 
 from smbus2 import SMBus
 from enum import Enum, auto
+from typing import Dict, List
 
 # Motor locations
 class Motor(Enum) :
@@ -43,7 +44,7 @@ class PWM :
 		LED8 = 0x29
 
 	# Index 0 maps to OFF_H, index 1 maps to OFF_L
-	LocationRegisterMap : dict = \
+	LocationRegisterMap : Dict[Motor, List[_Registers]] = \
 		{
 			Motor.UPPER_LEFT : [_Registers.LED0, _Registers.LED0_L],
 			Motor.UPPER_MIDDLE : [_Registers.LED1, _Registers.LED1_L],
@@ -56,14 +57,14 @@ class PWM :
 			Motor.LOWER_RIGHT : [_Registers.LED8, _Registers.LED8_L]
 		}
 
-	def _initializePWM(self) :
+	def _initializePWM(self) -> None:
 		# Go through each register and disable OFF mode
 		for reg in PWM._Registers :
 			self._bus.write_byte_data(self._address, reg.value, 0x00)
 
 	def __init__(self) :
-		self._bus = SMBus(1)
-		self._address = 0x40
+		self._bus: SMBus = SMBus(1)
+		self._address: int = 0x40
 		self._bus.write_byte_data(self._address, _Registers.MODE1, 0x00) # Enable normal mode, disable all-call
 		self._initializePWM()
 
@@ -71,7 +72,7 @@ class PWM :
 		self._bus.write_byte_data(self._address, _Registers.MODE1, 0x10) # Re-enable sleep mode
 		self._bus.close()
 
-	def setDutyCycle(self, location: Motor, value: int) :
+	def setDutyCycle(self, location: Motor, value: int) -> None:
 		if value >= 0 and value <= 4095 :
 			self._bus.write_byte_data(self._address, PWM.LocationRegisterMap[location][0].value, \
 				(value & 0xf00)>>8)	# Write upper 4 bits to OFF_H

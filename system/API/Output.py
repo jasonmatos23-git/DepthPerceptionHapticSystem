@@ -10,8 +10,8 @@ from system.API.PWM import PWM
 class Output :
 
 	def __init__(self) :
-		self._pwm = PWM()
+		self._pwm: PWM = PWM()
 
-	def setDutyCycle(self, location, value) :
+	def setDutyCycle(self, location: Motor, value: int) -> None:
 		# Can use this function to discretize
 		self._pwm.setDutyCycle(location, value)
