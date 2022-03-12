@@ -5,12 +5,13 @@
 
 from numpy import zeros, ndarray
 from enum import Enum, auto
+from smbus2 import SMBus
 from system.API.modules.PWM import PWM, Motor
 
 class Output :
 
-	def __init__(self) :
-		self._pwm: PWM = PWM()
+	def __init__(self, bus: SMBus) :
+		self._pwm: PWM = PWM(bus)
 
 	def setDutyCycle(self, location: Motor, value: int) -> None:
 		# Can use this function to discretize

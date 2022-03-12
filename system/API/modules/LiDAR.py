@@ -30,13 +30,8 @@ class LiDAR :
 			_Addresses.FORWARD : [_reqForwardLidar, _resForwardLidar]
 		}
 
-	def __init__(self) :
-		self._bus: SMBus = SMBus(1)
-
-	def __del__(self) :
-		if not (self._bus is None) :
-			self._bus.close()
-			self._bus = None
+	def __init__(self, bus: SMBus) :
+		self._bus: SMBus = bus
 
 	def _getLidar(self, lidar: _Addresses) -> int:
 		# Send request/response

@@ -9,6 +9,7 @@ from system.models.container import Container
 from system.services.servicelist import *
 from system.API.Input import Input
 from typing import Dict
+from smbus2 import SMBus
 
 # Manages instantiation specific to services
 class ServiceContainer(Container) :
@@ -17,9 +18,9 @@ class ServiceContainer(Container) :
 
 	# System instance of RoutineContainer passed to connect
 	# services to their routines when running _newExecutable
-	def __init__(self, routineContainer: RoutineContainer) :
+	def __init__(self, routineContainer: RoutineContainer, bus: SMBus) :
 		self.instanceMap: Dict[str, Executable] = {}
-		self.input_: Input = Input()
+		self.input_: Input = Input(bus)
 		self.routineContainer: RoutineContainer = routineContainer
 
 	def _newExecutable(self, clss: type) -> Executable:
