@@ -69,6 +69,7 @@ class PWM :
 		self._initializePWM()
 
 	def __del__(self) :
+		self.setAllDutyCycle(0)
 		self._bus.write_byte_data(self._address, _Registers.MODE1.value, 0x10) # Re-enable sleep mode
 
 	def setDutyCycle(self, location: Motor, value: int) -> None:
@@ -77,3 +78,7 @@ class PWM :
 				(value & 0xf00)>>8)	# Write upper 4 bits to OFF_H
 			self._bus.write_byte_data(self._address, PWM.LocationRegisterMap[location][1].value, \
 				value & 0x0ff)	# Write lower 8 bits to OFF_L
+
+	def setAllDutyCycle(self, value: int) -> None:
+		for motor in LocationRegisterMap.keys() :
+			setDutyCycle(motor, value)
