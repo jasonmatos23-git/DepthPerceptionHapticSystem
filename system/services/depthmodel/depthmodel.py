@@ -87,7 +87,7 @@ class DepthModel :
 		# Maxpool in to 3x3 result
 		output = np.array([
 			[corner[0:16, 0:16].max(), bound[0:16].max(), corner[0:16, 16:32].max()], \
-			[side[,0:16].max(), center.max(), side[,16:32].max()], \
+			[side[:,0:16].max(), center.max(), side[:,16:32].max()], \
 			[corner[16:32, 0:16].max(), bound[16:32].max(), corner[16:32, 16:32].max()]
 		])
 		# # LiDAR measurement may be useful for following line
