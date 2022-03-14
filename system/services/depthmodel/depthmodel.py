@@ -63,7 +63,7 @@ class DepthModel :
 		# img_out: ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
 		# cv2.imwrite("output256.png", img_out)
 		# Downsizing result
-		output: ndarray = cv2.resize(output, self._resolution, interpolation=cv2.INTER_NEAREST)
+		output: ndarray = cv2.resize(output, self._resolution, interpolation=cv2.INTER_LINEAR)
 		# depth_min: float32 = output.min()
 		# depth_max: float32 = output.max()
 		# # LiDAR measurement may be useful for following line
