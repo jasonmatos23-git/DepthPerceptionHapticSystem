@@ -15,30 +15,32 @@ from numpy import float32, uint8, empty, exp, ndarray
 class DepthModel :
 
 	# 2D Gaussian function with std_dev of 70 px and peak at 128
-	def _Gaussian2D(self, x, y) -> float32:
-		var: int = 70**2
-		pk: int = 128
-		return exp(-(((x-pk)**2)/(2*var)+((y-pk)**2)/(2*var))).astype(float32)
+	def _Gaussian2D(self, x: int, y: int, peak: float32, std_dev: float32) -> float32:
+		var: float32 = std_dev**2
+		return exp(-(((x-peak)**2)+((y-peak)**2))/(2*var)).astype(float32)
 
 	# 2D Gaussian filter for reducing effect of gradient on
 	# depth estimation
-	def _Gaussian2DFilter(self) -> ndarray:
-		filt: ndarray = empty([256, 256])
+	def _Gaussian2DFilter(self, shape: tuple, peak: float32, std_dev: float32) -> ndarray:
+		filt: ndarray = empty(shape)
 		i: int
 		j: int
-		for i in range(0, 256) :
-			for j in range(0, 256) :
-				filt[i, j] = self._Gaussian2D(i, j)
-		return filt
+		for i in range(0, shape[0]) :
+			for j in range(0, shape[1]) :
+				filt[i, j] = self._Gaussian2D(i, j, peak, std_dev)
+		# min-max normalization to ensure max value is 1
+		filt_max = filt.max()
+		filt_min = filt.min()
+		return (filt-filt_min)/(filt_max-filt_min)
 
-	def __init__(self, resolution: tuple) -> None:
+	def __init__(self) -> None:
 		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt.mnn")
 		self._session: MNN.Session = self._interpreter.createSession()
 		self._input_tensor: MNN.Tensor = self._interpreter.getSessionInput(self._session)
 		self._output_tensor: MNN.Tensor = self._interpreter.getSessionOutput(self._session)
 		self._mean: list = [0.485, 0.456, 0.406]
 		self._std: list = [0.229, 0.224, 0.225]
-		self._resolution: tuple = resolution
+		self._inter_resolution: tuple = (32,32)
 
 	# Get depth map from an image
 	def RunInference(self, img: ndarray) -> ndarray:
@@ -63,7 +65,7 @@ class DepthModel :
 		# img_out: ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
 		# cv2.imwrite("output256.png", img_out)
 		# Downsizing result
-		output: ndarray = cv2.resize(output, self._resolution, interpolation=cv2.INTER_LINEAR)
+		output: ndarray = cv2.resize(output, self._inter_resolution, interpolation=cv2.INTER_LINEAR)
 		# depth_min: float32 = output.min()
 		# depth_max: float32 = output.max()
 		# # LiDAR measurement may be useful for following line
