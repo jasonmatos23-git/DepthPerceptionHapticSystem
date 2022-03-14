@@ -42,14 +42,14 @@ class DepthModel :
 		corners: np.ndarray = np.concatenate((bsplit, tsplit))
 		return corners, sides, bounds
 
-	def __init__(self) -> None:
+	def __init__(self, std_dev: np.float32) -> None:
 		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt.mnn")
 		self._session: MNN.Session = self._interpreter.createSession()
 		self._input_tensor: MNN.Tensor = self._interpreter.getSessionInput(self._session)
 		self._output_tensor: MNN.Tensor = self._interpreter.getSessionOutput(self._session)
 		self._mean: list = [0.485, 0.456, 0.406]
 		self._std: list = [0.229, 0.224, 0.225]
-		self._Gaussian: np.ndarray = self._Gaussian2DFilter((32,32), 15.5, 10)
+		self._Gaussian: np.ndarray = self._Gaussian2DFilter((32,32), 15.5, std_dev)
 		self._corners, self._sides, self._bounds = \
 			self._createFilters(self._Gaussian)
 
