@@ -42,16 +42,16 @@ class DepthModel :
 		corners: np.ndarray = np.concatenate((bsplit, tsplit))
 		return corners, sides, bounds
 
-	def __init__(self, std_dev: np.float32) -> None:
+	def __init__(self, std_dev: np.float32 = 0.0) -> None:
 		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt.mnn")
 		self._session: MNN.Session = self._interpreter.createSession()
 		self._input_tensor: MNN.Tensor = self._interpreter.getSessionInput(self._session)
 		self._output_tensor: MNN.Tensor = self._interpreter.getSessionOutput(self._session)
 		self._mean: list = [0.485, 0.456, 0.406]
 		self._std: list = [0.229, 0.224, 0.225]
-		self._Gaussian: np.ndarray = self._Gaussian2DFilter((32,32), 15.5, std_dev)
-		self._corners, self._sides, self._bounds = \
-			self._createFilters(self._Gaussian)
+		# self._Gaussian: np.ndarray = self._Gaussian2DFilter((32,32), 15.5, std_dev)
+		# self._corners, self._sides, self._bounds = \
+		# 	self._createFilters(self._Gaussian)
 
 	# Get depth map from an image
 	def RunInference(self, img: np.ndarray) -> np.ndarray:
@@ -77,20 +77,29 @@ class DepthModel :
 		# cv2.imwrite("output256.png", img_out)
 		# Downsizing result
 		output: np.ndarray = cv2.resize(output, (32,32), interpolation=cv2.INTER_LINEAR)
+		# Clip to minimum and maximum distance values
+		mean = 500.0		# Experimentally determined mean (very roughly 2 meters)
+		maximum = 1000.0	# Experimentally determined maximum estimated closeness
+		N_levels = 4		# Discrete levels of output
+		clipped: np.ndarray = np.clip(output, mean, maximum)
+		# Min-max normalization on result
+		norm: np.ndarray = N_levels*(clipped - mean)/(maximum - mean)
+		# Ceil to nearest int on [0, N]
+		ceil: np.ndarray = np.ceil(norm)
 		# depth_min: np.float32 = output.min()
 		# depth_max: np.float32 = output.max()
 		# Apply kernels
-		corner: np.ndarray = output * self._corners
-		side: np.ndarray = output * self._sides
-		bound: np.ndarray = output * self._bounds
-		center: np.ndarray = output * self._Gaussian
+		# corner: np.ndarray = output * self._corners
+		# side: np.ndarray = output * self._sides
+		# bound: np.ndarray = output * self._bounds
+		# center: np.ndarray = output * self._Gaussian
 		# Maxpool in to 3x3 result
-		output = np.array([
-			[corner[0:16, 0:16].max(), bound[0:16].max(), corner[0:16, 16:32].max()], \
-			[side[:,0:16].max(), center.max(), side[:,16:32].max()], \
-			[corner[16:32, 0:16].max(), bound[16:32].max(), corner[16:32, 16:32].max()]
-		])
+		# output = np.array([
+		# 	[corner[0:16, 0:16].max(), bound[0:16].max(), corner[0:16, 16:32].max()], \
+		# 	[side[:,0:16].max(), center.max(), side[:,16:32].max()], \
+		# 	[corner[16:32, 0:16].max(), bound[16:32].max(), corner[16:32, 16:32].max()]
+		# ])
 		# # LiDAR measurement may be useful for following line
 		# img_out: np.ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
 
-		return output
+		return cv2.resize(ceil, (3, 3), interpolation=cv2.INTER_LINEAR)
