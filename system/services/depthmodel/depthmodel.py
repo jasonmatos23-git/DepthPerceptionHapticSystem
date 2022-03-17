@@ -32,16 +32,6 @@ class DepthModel :
 		filt_min: np.float32 = filt.min()
 		return (filt-filt_min)/(filt_max-filt_min)
 
-	# Creates 3 kernels corresponding to 9 PWMs
-	def _createFilters(self, Gaussian: np.ndarray) :
-		lsplit, rsplit = np.hsplit(Gaussian, 2)
-		sides: np.ndarray = np.concatenate((rsplit, lsplit), 1)
-		tsplit, bsplit = np.vsplit(Gaussian, 2)
-		bounds: np.ndarray = np.concatenate((bsplit, tsplit))
-		tsplit, bsplit = np.vsplit(sides, 2)
-		corners: np.ndarray = np.concatenate((bsplit, tsplit))
-		return corners, sides, bounds
-
 	def __init__(self, std_dev: np.float32 = 0.0) -> None:
 		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt.mnn")
 		self._session: MNN.Session = self._interpreter.createSession()
@@ -49,12 +39,18 @@ class DepthModel :
 		self._output_tensor: MNN.Tensor = self._interpreter.getSessionOutput(self._session)
 		self._mean: list = [0.485, 0.456, 0.406]
 		self._std: list = [0.229, 0.224, 0.225]
-		# self._Gaussian: np.ndarray = self._Gaussian2DFilter((32,32), 15.5, std_dev)
-		# self._corners, self._sides, self._bounds = \
-		# 	self._createFilters(self._Gaussian)
+		self._exp_mean = 500.0		# Experimentally determined mean (very roughly 2 meters)
+		self._exp_maximum = 1000.0	# Experimentally determined maximum estimated closeness
+		self._exp_N_levels = 4		# Discrete levels of output
+		self._Gaussian = self._Gaussian2DFilter((256, 256), 127.5, 50)
 
-	# Get depth map from an image
-	def RunInference(self, img: np.ndarray) -> np.ndarray:
+	def _RunDiscretization(self, img: np.ndarray) :
+		return self._exp_N_levels*(img - self._exp_mean)/(self._exp_maximum - self._exp_mean)
+
+	def _RunClipping(self, img: np.ndarray) :
+		return np.clip(img, self._exp_mean, self._exp_maximum)
+
+	def _RunInference(self, img: np.ndarray) :
 		# Create input tensor
 		img: np.ndarray = img / 255.0
 		img_input: np.ndarray = cv2.resize(img, (256,256), interpolation=cv2.INTER_CUBIC)
@@ -70,36 +66,16 @@ class DepthModel :
 			np.empty((1,256,256,1), dtype=np.float32), MNN.Tensor_DimensionType_Tensorflow)
 		self._output_tensor.copyToHostTensor(tmp_output)
 		output: np.ndarray = tmp_output.getNumpyData()
-		# Write result for demo
-		# depth_min: np.float32 = output.min()
-		# depth_max: np.float32 = output.max()
-		# img_out: np.ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
-		# cv2.imwrite("output256.png", img_out)
-		# Downsizing result
-		output: np.ndarray = cv2.resize(output, (32,32), interpolation=cv2.INTER_LINEAR)
-		# Clip to minimum and maximum distance values
-		mean = 500.0		# Experimentally determined mean (very roughly 2 meters)
-		maximum = 1000.0	# Experimentally determined maximum estimated closeness
-		N_levels = 4		# Discrete levels of output
-		clipped: np.ndarray = np.clip(output, mean, maximum)
-		# Min-max normalization on result
-		norm: np.ndarray = N_levels*(clipped - mean)/(maximum - mean)
-		# Ceil to nearest int on [0, N]
-		ceil: np.ndarray = np.ceil(norm)
-		# depth_min: np.float32 = output.min()
-		# depth_max: np.float32 = output.max()
-		# Apply kernels
-		# corner: np.ndarray = output * self._corners
-		# side: np.ndarray = output * self._sides
-		# bound: np.ndarray = output * self._bounds
-		# center: np.ndarray = output * self._Gaussian
-		# Maxpool in to 3x3 result
-		# output = np.array([
-		# 	[corner[0:16, 0:16].max(), bound[0:16].max(), corner[0:16, 16:32].max()], \
-		# 	[side[:,0:16].max(), center.max(), side[:,16:32].max()], \
-		# 	[corner[16:32, 0:16].max(), bound[16:32].max(), corner[16:32, 16:32].max()]
-		# ])
-		# # LiDAR measurement may be useful for following line
-		# img_out: np.ndarray = (255 * (output - depth_min) / (depth_max - depth_min)).astype("uint8")
+		return output
 
-		return cv2.resize(ceil, (3, 3), interpolation=cv2.INTER_LINEAR)
+	# Get depth map from an image
+	def RunInference(self, img: np.ndarray) -> np.ndarray:
+		# Run CNN model
+		output: np.ndarray = self._RunInference(img)
+		# Clip
+		clipped: np.ndarray = self._RunClipping(output)
+		# Min-max normalization on result
+		norm: np.ndarray = self._RunDiscretization(clipped)
+		reduced_size: np.ndarray = cv2.resize(norm, (3, 3), interpolation=cv2.INTER_LINEAR)
+		# Ceil to nearest int on [0, N]
+		return np.ceil(reduced_size)
