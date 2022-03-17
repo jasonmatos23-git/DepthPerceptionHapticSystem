@@ -32,7 +32,7 @@ class DepthModel :
 		filt_min: np.float32 = filt.min()
 		return (filt-filt_min)/(filt_max-filt_min)
 
-	def __init__(self, std_dev: np.float32 = 0.0) -> None:
+	def __init__(self) -> None:
 		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt.mnn")
 		self._session: MNN.Session = self._interpreter.createSession()
 		self._input_tensor: MNN.Tensor = self._interpreter.getSessionInput(self._session)
@@ -42,7 +42,6 @@ class DepthModel :
 		self._exp_mean = 500.0		# Experimentally determined mean (very roughly 2 meters)
 		self._exp_maximum = 1000.0	# Experimentally determined maximum estimated closeness
 		self._exp_N_levels = 4		# Discrete levels of output
-		self._Gaussian = self._Gaussian2DFilter((256, 256), 127.5, 50)
 
 	def _RunDiscretization(self, img: np.ndarray) :
 		return self._exp_N_levels*(img - self._exp_mean)/(self._exp_maximum - self._exp_mean)
