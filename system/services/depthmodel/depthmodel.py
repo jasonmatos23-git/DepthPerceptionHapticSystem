@@ -50,6 +50,11 @@ class DepthModel :
 		return np.clip(img, self._exp_mean, self._exp_maximum)
 
 	def _RunInference(self, img: np.ndarray) :
+		pass
+
+	# Get depth map from an image
+	def RunInference(self, img: np.ndarray) -> np.ndarray:
+		# Run CNN model
 		# Create input tensor
 		img: np.ndarray = img / 255.0
 		img_input: np.ndarray = cv2.resize(img, (256,256), interpolation=cv2.INTER_CUBIC)
@@ -65,13 +70,8 @@ class DepthModel :
 			np.empty((1,256,256,1), dtype=np.float32), MNN.Tensor_DimensionType_Tensorflow)
 		self._output_tensor.copyToHostTensor(tmp_output)
 		output: np.ndarray = tmp_output.getNumpyData()
-		return output
-
-	# Get depth map from an image
-	def RunInference(self, img: np.ndarray) -> np.ndarray:
-		# Run CNN model
 		# Clip
-		clipped: np.ndarray = np.clip(self._RunInference(img), 500.0, 1000.0)
+		clipped: np.ndarray = np.clip(output, 500.0, 1000.0)
 		# Min-max normalization on result
 		norm: np.ndarray = self._RunDiscretization(clipped)
 		reduced_size: np.ndarray = cv2.resize(norm, (3, 3), interpolation=cv2.INTER_LINEAR)
