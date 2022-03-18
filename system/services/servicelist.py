@@ -6,10 +6,12 @@
 # Import service code
 # from system.services.templateservice import *
 from system.services.depth_perception_service import *
+from system.services.curb_detection_service import *
 
 # JSON connect name to service
 servicelist = \
 {
 #	"TemplateService" : TemplateService
-	"DepthPerceptionService" : DepthPerceptionService
+	"DepthPerceptionService" : DepthPerceptionService,
+	"CurbDetectionService" : CurbDectectionService
 }
