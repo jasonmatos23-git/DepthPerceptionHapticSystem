@@ -71,7 +71,7 @@ class DepthModel :
 		self._output_tensor.copyToHostTensor(tmp_output)
 		output: np.ndarray = tmp_output.getNumpyData()
 		# Clip
-		clipped: np.ndarray = np.clip(output, 800.0, 1100.0)
+		clipped: np.ndarray = np.clip(output, 600.0, 1000.0)
 		# Min-max normalization on result
 		norm: np.ndarray = self._RunDiscretization(clipped)
 		reduced_size: np.ndarray = cv2.resize(norm, (3, 3), interpolation=cv2.INTER_LINEAR)
