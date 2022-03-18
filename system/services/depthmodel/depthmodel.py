@@ -70,9 +70,8 @@ class DepthModel :
 	# Get depth map from an image
 	def RunInference(self, img: np.ndarray) -> np.ndarray:
 		# Run CNN model
-		output: np.ndarray = self._RunInference(img)
 		# Clip
-		clipped: np.ndarray = self._RunClipping(output)
+		clipped: np.ndarray = np.clip(self._RunInference(img), 500.0, 1000.0)
 		# Min-max normalization on result
 		norm: np.ndarray = self._RunDiscretization(clipped)
 		reduced_size: np.ndarray = cv2.resize(norm, (3, 3), interpolation=cv2.INTER_LINEAR)
