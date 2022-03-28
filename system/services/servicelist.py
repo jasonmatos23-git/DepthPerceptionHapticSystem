@@ -6,10 +6,16 @@
 # Import service code
 # from system.services.templateservice import *
 from system.services.depth_perception_service import *
+from system.services.generalmode import *
+from system.services.outdoormode import *
+from system.services.lowpowermode import *
 
 # JSON connect name to service
 servicelist = \
 {
 #	"TemplateService" : TemplateService
-	"DepthPerceptionService" : DepthPerceptionService
+	"DepthPerceptionService" : DepthPerceptionService,
+	"GeneralMode" : GeneralMode,
+	"OutdoorMode" : OutdoorMode,
+	"LowPowerMode" : LowPowerMode
 }
