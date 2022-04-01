@@ -11,7 +11,7 @@ from typing import Dict, List
 
 class _Addresses(Enum) :
 	FORWARD = 0x10
-	ANGLED = None	# Will be 0x10. Forward address will be modified
+	ANGLED = 0x11	
 
 class LiDAR :
 
@@ -20,14 +20,15 @@ class LiDAR :
 	_reqForwardLidar: i2c_msg = i2c_msg.write(_Addresses.FORWARD.value, \
 		[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
 	_resForwardLidar: i2c_msg = i2c_msg.read(_Addresses.FORWARD.value, 9) # 9 result bytes
-	# Angled LiDAR
-	# _reqAngledLidar: i2c_msg = i2c_msg.write(_Addresses.ANGLED.value, \
-	# 	[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
-	# _resAngledLidar: i2c_msg = i2c_msg.read(_Addresses.ANGLED.value, 9) # 9 result bytes
-
+	# Angled LiDAR 
+	_reqAngledLidar: i2c_msg = i2c_msg.write(_Addresses.ANGLED.value, \
+		[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
+	_resAngledLidar: i2c_msg = i2c_msg.read(_Addresses.ANGLED.value, 9) # 9 result bytes
+	 
 	_AddressMsgMap: Dict[_Addresses, List[i2c_msg]] = \
 		{
-			_Addresses.FORWARD : [_reqForwardLidar, _resForwardLidar]
+			_Addresses.FORWARD : [_reqForwardLidar, _resForwardLidar],
+			_Addresses.ANGLED : [_reqAngledLidar, _resAngledLidar]
 		}
 
 	def __init__(self, bus: SMBus) :
@@ -59,5 +60,4 @@ class LiDAR :
 		return self._GetLidar(_Addresses.FORWARD)
 
 	def GetAngledLidar(self) -> int:
-		raise NotImplementedError("Angled LiDAR address has not yet been set.")
-		# return self._GetLidar(_Addresses.ANGLED)
+		return self._GetLidar(_Addresses.ANGLED) 
