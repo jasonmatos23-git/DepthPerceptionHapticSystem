@@ -12,9 +12,12 @@ class TemplateService(Service) :
 
 	# Save reference to routine(s) that the service may use
 	# and whatever other initialization needed
-	def __init__(self, input_: Input, routineContainer: RoutineContainer) -> None:
+	def __init__(self, input_: Input = None, routineContainer: RoutineContainer = None) -> None:
 		self.input_: Input = input_
-		self.routine: Routine = routineContainer.GetRoutine("TemplateRoutine")
+		self.routine: Routine = None
+		if routineContainer is None :
+			return
+		self.routine = routineContainer.GetRoutine("TemplateRoutine")
 
 	# Service logic (e.g. CNN for depth perception)
 	def Execute(self) -> None:

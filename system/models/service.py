@@ -9,6 +9,6 @@ from system.routine_container import RoutineContainer
 
 class Service(Executable) :
 
-	def __init__(self, input_: Input, routineContainer: RoutineContainer) -> None:
+	def __init__(self, input_: Input = None, routineContainer: RoutineContainer = None) -> None:
 		self.input_: Input = input_
 		raise NotImplementedError
