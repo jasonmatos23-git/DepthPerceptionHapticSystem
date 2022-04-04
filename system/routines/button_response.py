@@ -21,18 +21,18 @@ class ButtonResponse(Routine) :
 		print("Button press received.")
 
 	# Callback functions
-	def Button1Down(self) :
+	def Button1Down(self, channel) :
 		self.Execute()
 		self.state.setMode(DPHSMode.GENERAL)
 
-	def Button2Down(self) :
+	def Button2Down(self, channel) :
 		pass
 
-	def Button3Down(self) :
+	def Button3Down(self, channel) :
 		pass
 
-	def Button4Down(self) :
+	def Button4Down(self, channel) :
 		pass
 
-	def Button5Down(self) :
+	def Button5Down(self, channel) :
 		pass
