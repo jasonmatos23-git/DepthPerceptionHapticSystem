@@ -29,8 +29,10 @@ import RPi.GPIO as GPIO
 
 class HardwareInterrupt :
 
-	def __init__(self, routineContainer: RoutineContainer) :
-		self.response: Routine = routineContainer.GetRoutine("ButtonResponse")
+	def __init__(self, routineContainer: RoutineContainer = None) :
+		self.response: Routine = None
+		if routineContainer is not None :
+			self.response: Routine = routineContainer.GetRoutine("ButtonResponse")
 		# Set ALTs, define pins, set GPIO to BCM
 		self._conf: Configuration = Configuration()
 		self._bouncetime: int = 400
