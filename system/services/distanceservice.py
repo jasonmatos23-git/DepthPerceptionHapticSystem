@@ -24,7 +24,8 @@ class DistanceService(Service) :
 	def Execute(self) -> None:
 		distance: float = self.input_.GetForwardLidar()
 		distance = distance * 0.03281	# Conversion from cm to feet
-		if distance < self.emergencyThreshold :
+		# Lock execution if threshold distance reached
+		while distance < self.emergencyThreshold :
 			self.emergencyRoutine.Execute()
-		else :
-			self.linDistRoutine.Execute(distance)
+			distance = self.input_.GetForwardLidar() * 0.03281
+		self.linDistRoutine.Execute(distance)
