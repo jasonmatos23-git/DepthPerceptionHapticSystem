@@ -6,6 +6,7 @@
 from system.models.routine import Routine
 from system.mode import State
 from system.API.Output import Output
+from system.API.modules.PWM import Motor
 
 from numpy import clip
 
@@ -22,4 +23,4 @@ class LinearDistanceRoutine(Routine) :
 		normalized: int = \
 			int(4095.0 * ((self.minDist - clip(distance, \
 			self.maxDist, self.minDist))/(self.minDist - self.maxDist)))
-		self.output_.setAllDutyCycle(normalized)
+		self.output_.setDutyCycle(Motor.UPPER_MIDDLE, normalized)
