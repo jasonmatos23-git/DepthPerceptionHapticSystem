@@ -29,21 +29,41 @@ import RPi.GPIO as GPIO
 
 class HardwareInterrupt :
 
-	def reset_mode_button(channel) :
-		#call function for reset system
+	def button1down(self, channel) :
 		pass
 
-	def pathway_finder_button(channel) :
-		#call function for pathway finder
+	def button2down(self, channel) :
+		pass
+
+	def button3down(self, channel) :
+		pass
+
+	def button4down(self, channel) :
+		pass
+
+	def button5down(self, channel) :
 		pass
 
 	def __init__(self, routineContainer: RoutineContainer) :
+		# Set ALTs, define pins, set GPIO to BCM
 		self._conf: Configuration = Configuration()
-		#reset mode
-		GPIO.add_event_detect(self._conf.BUTTON_PIN_55, GPIO.RISING,
-					callback=reset_mode_button,
-					bouncetime=50)
-		#Pathway Finder
-		GPIO.add_event_detect(self._conf.BUTTON_PIN_51, GPIO.RISING,
-					callback=pathway_finder_button,
-					bouncetime=50)
+		# Connect functions to callbacks
+		GPIO.add_event_detect(self._conf.BUTTON_PIN_6, GPIO.RISING, \
+			callback = button1down, bouncetime = 50)
+		GPIO.add_event_detect(self._conf.BUTTON_PIN_14, GPIO.RISING, \
+			callback = button2down, bouncetime = 50)
+		GPIO.add_event_detect(self._conf.BUTTON_PIN_15, GPIO.RISING, \
+			callback = button3down, bouncetime = 50)
+		GPIO.add_event_detect(self._conf.BUTTON_PIN_16, GPIO.RISING, \
+			callback = button4down, bouncetime = 50)
+		GPIO.add_event_detect(self._conf.BUTTON_PIN_17, GPIO.RISING, \
+			callback = button5down, bouncetime = 50)
+
+	def __del__(self) :
+		# Remove callbacks and configuration
+		GPIO.remove_event_detect(self._conf.BUTTON_PIN_6)
+		GPIO.remove_event_detect(self._conf.BUTTON_PIN_14)
+		GPIO.remove_event_detect(self._conf.BUTTON_PIN_15)
+		GPIO.remove_event_detect(self._conf.BUTTON_PIN_16)
+		GPIO.remove_event_detect(self._conf.BUTTON_PIN_17)
+		del(self._conf)
