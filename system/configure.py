@@ -106,3 +106,7 @@ class Configuration :
 
 		#Setting to ALT0 configuration
 		#ALT0 is default so code not needed
+
+	def __del__(self) :
+		self._pi.stop()
+		GPIO.cleanup()
