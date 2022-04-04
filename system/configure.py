@@ -20,21 +20,27 @@ class Configuration :
 		#Button Inputs
 
 		#GPIO Pins
-		self.BUTTON_PIN_99 = 99
-		self.BUTTON_PIN_55 = 55
-		self.BUTTON_PIN_51 = 51
+		self.BUTTON_PIN_6 = 6
+		self.BUTTON_PIN_14 = 14
+		self.BUTTON_PIN_15 = 15
+		self.BUTTON_PIN_16 = 16
+		self.BUTTON_PIN_17 = 17
 
 		#May encounter error with pin 99 as it is already default at low and powers off the system by manufacturer
 		#replace to pull_up_down=GPIO.PUD_UP for a pull up if needed
-		GPIO.setup(self.BUTTON_PIN_99, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-		GPIO.setup(self.BUTTON_PIN_55, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-		GPIO.setup(self.BUTTON_PIN_51, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+		GPIO.setup(self.BUTTON_PIN_6, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+		GPIO.setup(self.BUTTON_PIN_14, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+		GPIO.setup(self.BUTTON_PIN_15, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+		GPIO.setup(self.BUTTON_PIN_16, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+		GPIO.setup(self.BUTTON_PIN_17, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 		#-----------------------
 		#Camera Pins I/O
 
 		#These variables for camera may be unnecessary
 		#No conversion needed
+		# NOTE: CAM lines below have not been modified to
+		# their corrected values
 		self._CAM_IO1 = 24
 		self._CAM_IO0 = 48
 		self._CAM_SCL = 80
@@ -51,11 +57,11 @@ class Configuration :
 
 		#Conversion to SPI (ALT0)
 		#Accel_CE1_N is an extra GPIO in case of need for bus
-		self._Accel_SCL = 38	#Clock
-		self._Accel_MIS0 = 40	#Main Out
-		self._Accel_MOS1 = 44	#Main In
-		self._Accel_CE0_N = 39	#Chip Select 0
-		self._Accel_CE1_N = 37	#Chip Select 1
+		self._Accel_SCL = 11	#Clock
+		self._Accel_MISO = 9	#Main In
+		self._Accel_MOSI = 10	#Main Out
+		self._Accel_CE0_N = 8	#Chip Select 0
+		self._Accel_CE1_N = 7	#Chip Select 1
 
 		#Setting to ALT0 configuration
 		#ALT0 is default so code not needed but use code similar to below if needed
@@ -65,8 +71,8 @@ class Configuration :
 		#Motor Controller I/O
 
 		#Conversion to I2C (ALT0)
-		self._Motor_SDA = 58
-		self._Motor_SCL = 56
+		self._Motor_SDA = 2
+		self._Motor_SCL = 3
 
 		#Setting to ALT0 configuration
 		#ALT0 is default so code not needed
@@ -75,8 +81,8 @@ class Configuration :
 		#Lidar 1 I/O
 
 		#Conversion to I2C (ALT0)
-		self._Lidar_1_SCL = 35
-		self._Lidar_1_SDA = 36
+		self._Lidar_1_SCL = 1
+		self._Lidar_1_SDA = 0
 
 		#Setting to ALT0 configuration
 		#ALT0 is default so code not needed
@@ -85,8 +91,8 @@ class Configuration :
 		#Lidar 2 I/O
 
 		#Conversion to I2C (ALT5)
-		self._Lidar_2_SCL = 34
-		self._Lidar_2_SDA = 54
+		self._Lidar_2_SCL = 5
+		self._Lidar_2_SDA = 4
 
 		#Setting to ALT5 configuration
 		self._pi.set_mode(self._Lidar_2_SCL, pigpio.ALT5)
@@ -96,7 +102,7 @@ class Configuration :
 		#Speaker Output
 
 		#Conversion to PWM (ALT0)
-		self._Speaker0 = 31
+		self._Speaker0 = 12
 
 		#Setting to ALT0 configuration
 		#ALT0 is default so code not needed
