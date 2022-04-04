@@ -9,4 +9,4 @@ from system.models.routine import Routine
 class HardwareInterrupt :
 
 	def __init__(self, routineContainer: RoutineContainer) :
-		self.buttonResponse: Routine = routineContainer.GetRoutine("ButtonResponse")
+		self.response: Routine = routineContainer.GetRoutine("ButtonResponse")
