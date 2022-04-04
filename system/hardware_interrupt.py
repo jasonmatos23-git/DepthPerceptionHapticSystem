@@ -29,36 +29,24 @@ import RPi.GPIO as GPIO
 
 class HardwareInterrupt :
 
-	def button1down(self, channel) :
-		pass
-
-	def button2down(self, channel) :
-		pass
-
-	def button3down(self, channel) :
-		pass
-
-	def button4down(self, channel) :
-		pass
-
-	def button5down(self, channel) :
-		pass
-
-	def __init__(self, routineContainer: RoutineContainer) :
+	def __init__(self, routineContainer: RoutineContainer = None, routine: Routine = None) :
+		self.response: Routine = routine
+		if routine is None :
+			self.response: Routine = routineContainer.GetRoutine("ButtonResponse")
 		# Set ALTs, define pins, set GPIO to BCM
 		self._conf: Configuration = Configuration()
 		self._bouncetime: int = 400
 		# Connect functions to callbacks
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_6, GPIO.RISING, \
-			callback = self.button1down, bouncetime = self._bouncetime)
+			callback = self.response.Button1Down, bouncetime = self._bouncetime)
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_14, GPIO.RISING, \
-			callback = self.button2down, bouncetime = self._bouncetime)
+			callback = self.response.Button2Down, bouncetime = self._bouncetime)
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_15, GPIO.RISING, \
-			callback = self.button3down, bouncetime = self._bouncetime)
+			callback = self.response.Button3Down, bouncetime = self._bouncetime)
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_16, GPIO.RISING, \
-			callback = self.button4down, bouncetime = self._bouncetime)
+			callback = self.response.Button4Down, bouncetime = self._bouncetime)
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_17, GPIO.RISING, \
-			callback = self.button5down, bouncetime = self._bouncetime)
+			callback = self.response.Button5Down, bouncetime = self._bouncetime)
 
 	def __del__(self) :
 		# Remove callbacks and configuration

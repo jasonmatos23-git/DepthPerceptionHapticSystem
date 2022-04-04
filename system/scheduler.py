@@ -5,18 +5,36 @@
 
 from system.service_container import ServiceContainer
 from system.models.service import Service
-from system.mode import State
-
-from time import sleep
+from system.mode import State, DPHSMode
+from system.models.mode import Mode
+from system.modes.general import GeneralMode
+from system.modes.lowpower import LowPowerMode
+from system.modes.outdoor import OutdoorMode
 
 class Scheduler :
 
 	def __init__(self, serviceContainer: ServiceContainer, state: State) :
 		self.state: State = state
-		self.depthService = serviceContainer.GetService("DepthPerceptionService")
+		self.generalMode: Mode = GeneralMode(state.modeChangedEvent, serviceContainer)
 
+	# NOTE: If calling Run() after the initial call ensure that
+	#		the state is changed via setMode() to a mode other than
+	#		the DPHSMode.EXIT or else the scheduler will return immediately.
 	def Run(self) :
-		while(True) :
-			self.depthService.Execute()
-			sleep(0.3)
+		self.state.modeChangedEvent.clear()
+		currentMode: DPHSMode = None
+		while True :
+			currentMode = self.state.getMode()
+			if currentMode == DPHSMode.LOW_POWER :
+				pass	# Execute LPM
+			elif currentMode == DPHSMode.GENERAL :
+				self.generalMode.enter()
+				self.generalMode.Execute()
+				self.generalMode.exit()
+			elif currentMode == DPHSMode.OUTDOOR :
+				pass	# Execute outdoor
+			elif currentMode == DPHSMode.EXIT :
+				self.state.modeChangedEvent.clear()
+				break
+			self.state.modeChangedEvent.clear()
 
