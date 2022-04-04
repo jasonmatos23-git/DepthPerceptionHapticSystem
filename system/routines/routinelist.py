@@ -7,11 +7,15 @@
 # from system.routines.templateroutine import *
 from system.routines.depth_perception_routine import *
 from system.routines.button_response import *
+from system.routines.linear_distance_routine import *
+from system.routines.emergency_response import *
 
 # JSON connect name to routine
 routinelist = \
 {
 #	"TemplateRoutine" : TemplateRoutine
 	"DepthPerceptionRoutine" : DepthPerceptionRoutine,
-	"ButtonResponse" : ButtonResponse
+	"ButtonResponse" : ButtonResponse,
+	"LinearDistanceRoutine" : LinearDistanceRoutine,
+	"EmergencyResponse" : EmergencyResponse
 }
