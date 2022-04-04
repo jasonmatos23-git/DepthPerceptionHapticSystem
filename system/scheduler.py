@@ -6,33 +6,31 @@
 from system.service_container import ServiceContainer
 from system.models.service import Service
 from system.mode import State, DPHSMode
-
-from time import sleep
+from system.models.mode import Mode
+from system.modes.general import GeneralMode
+from system.modes.lowpower import LowPowerMode
+from system.modes.outdoor import OutdoorMode
 
 class Scheduler :
 
 	def __init__(self, serviceContainer: ServiceContainer, state: State) :
 		self.state: State = state
-		self.prevMode: DPHSMode = self.state.getMode()
-		self.depthService = serviceContainer.GetService("DepthPerceptionService")
+		self.generalMode: Mode = GeneralMode(state.modeChangedEvent, serviceContainer)
 
 	def Run(self) :
-		# Mode change indications should also be called here.
-		# For general and outdoor mode, service will wrap a routine
-		# which will play enalbed/disabled indicator.
-		# LPM does that, and also enables/disables low power modes
-		# of hardware.
-		# Note: previous mode tracked to know when a mode change occurs
-		# to play indicator. In LPM case, also used as a debounce for enabling
-		# or disabling mode.
-		while(True) :
-			currentMode: DPHSMode = self.state.getMode()
+		currentMode: DPHSMode = None
+		while True :
+			currentMode = self.state.getMode()
 			if currentMode == DPHSMode.LOW_POWER :
-				continue	# Toggle LPM
+				pass	# Execute LPM
 			elif currentMode == DPHSMode.GENERAL :
-				self.depthService.Execute()
-				sleep(0.3)	# Sleep unnecessary, used for demonstrations
-				continue
+				self.generalMode.enter()
+				self.generalMode.Execute()
+				self.generalMode.exit()
 			elif currentMode == DPHSMode.OUTDOOR :
-				continue	# Run depth + curb
+				pass	# Execute outdoor
+			elif currentMode == DPHSMode.EXIT :
+				self.state.modeChangedEvent.clear()
+				break
+			self.state.modeChangedEvent.clear()
 
