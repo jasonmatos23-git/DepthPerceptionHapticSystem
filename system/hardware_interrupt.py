@@ -47,17 +47,18 @@ class HardwareInterrupt :
 	def __init__(self, routineContainer: RoutineContainer) :
 		# Set ALTs, define pins, set GPIO to BCM
 		self._conf: Configuration = Configuration()
+		self._bouncetime: int = 250
 		# Connect functions to callbacks
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_6, GPIO.RISING, \
-			callback = button1down, bouncetime = 50)
+			callback = button1down, bouncetime = self._bouncetime)
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_14, GPIO.RISING, \
-			callback = button2down, bouncetime = 50)
+			callback = button2down, bouncetime = self._bouncetime)
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_15, GPIO.RISING, \
-			callback = button3down, bouncetime = 50)
+			callback = button3down, bouncetime = self._bouncetime)
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_16, GPIO.RISING, \
-			callback = button4down, bouncetime = 50)
+			callback = button4down, bouncetime = self._bouncetime)
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_17, GPIO.RISING, \
-			callback = button5down, bouncetime = 50)
+			callback = button5down, bouncetime = self._bouncetime)
 
 	def __del__(self) :
 		# Remove callbacks and configuration
