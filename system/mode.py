@@ -18,10 +18,10 @@ class State :
 		self.state: DPHSMode = DPHSMode.GENERAL
 		self.modeChangedEvent: Event = Event()
 
-	def getMode() -> DPHSMode:
+	def getMode(self) -> DPHSMode:
 		return self.state
 
-	def setMode(mode: DPHSMode) -> None:
+	def setMode(self, mode: DPHSMode) -> None:
 		if self.state == mode :
 			return
 		self.state = mode
