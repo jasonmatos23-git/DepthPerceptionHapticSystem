@@ -17,7 +17,11 @@ class Scheduler :
 		self.state: State = state
 		self.generalMode: Mode = GeneralMode(state.modeChangedEvent, serviceContainer)
 
+	# NOTE: If calling Run() after the initial call ensure that
+	#		the state is changed via setMode() to a mode other than
+	#		the DPHSMode.EXIT or else the scheduler will return immediately.
 	def Run(self) :
+		self.state.modeChangedEvent.clear()
 		currentMode: DPHSMode = None
 		while True :
 			currentMode = self.state.getMode()
