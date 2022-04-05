@@ -87,7 +87,7 @@ class LiDAR :
 		sleep(0.001)	# Recommended wait time for result
 		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][5])
 		# Compare response
-		return self._AddressMsgMap[lidar][4] == self._AddressMsgMap[lidar][5]
+		return self._AddressMsgMap[lidar][4].buf[3] == self._AddressMsgMap[lidar][5].buf[3]
 
 	def _setLowPower(self, lidar: _Addresses) -> bool:
 		# Send request/response
@@ -95,7 +95,7 @@ class LiDAR :
 		sleep(0.001)	# Recommended wait time for result
 		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][3])
 		# Compare response
-		return self._AddressMsgMap[lidar][3] == self._AddressMsgMap[lidar][2]
+		return self._AddressMsgMap[lidar][3].buf[3] == self._AddressMsgMap[lidar][2].buf[3]
 
 	def setLowPowerForward(self) -> bool:
 		return self._setLowPower(_Addresses.FORWARD)
