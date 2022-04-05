@@ -11,9 +11,13 @@ from system.API.modules.camera import Camera
 
 class Input :
 
-	def __init__(self, bus: SMBus) -> None:
-		self._camera: Camera = Camera()
-		self._lidar: LiDAR = LiDAR(bus)
+	def __init__(self, bus: SMBus = None, camera_enabled: bool = True, lidar_enabled: bool = True) -> None:
+		self._camera: Camera = None
+		self._lidar: LiDAR = None
+		if camera_enabled :
+			self._camera: Camera = Camera()
+		if bus is not None and lidar_enabled :
+			self._lidar: LiDAR = LiDAR(bus)
 
 	def __del__(self) -> None:
 		del(self._camera)
