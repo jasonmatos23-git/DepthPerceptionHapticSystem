@@ -62,15 +62,23 @@ class PWM :
 		for reg in _Registers :
 			self._bus.write_byte_data(self._address, reg.value, 0x00)
 
+	def setNormalPower(self) :
+		# Enable normal mode, disable all-call
+		self._bus.write_byte_data(self._address, _Registers.MODE1.value, 0x00)
+
+	def setLowPower(self) :
+		self.setAllDutyCycle(0)
+		# Re-enable sleep mode
+		self._bus.write_byte_data(self._address, _Registers.MODE1.value, 0x10)
+
 	def __init__(self, bus: SMBus) :
 		self._bus: SMBus = bus
 		self._address: int = 0x40
-		self._bus.write_byte_data(self._address, _Registers.MODE1.value, 0x00) # Enable normal mode, disable all-call
+		self.setNormalPower()
 		self._initializePWM()
 
 	def __del__(self) :
-		self.setAllDutyCycle(0)
-		self._bus.write_byte_data(self._address, _Registers.MODE1.value, 0x10) # Re-enable sleep mode
+		self.setLowPower()
 
 	def setDutyCycle(self, location: Motor, value: int) -> None:
 		if value >= 0 and value <= 4095 :
