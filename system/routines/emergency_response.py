@@ -19,4 +19,5 @@ class EmergencyResponse(Routine) :
 		sleep(0.1)
 		self.output_.setAllDutyCycle(4095)
 		sleep(0.1)
+		self.output_.setAllDutyCycle(0)
 
