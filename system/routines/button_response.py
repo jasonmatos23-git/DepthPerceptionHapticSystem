@@ -23,13 +23,18 @@ class ButtonResponse(Routine) :
 	# Callback functions
 	def Button1Down(self, channel) :
 		self.Execute()
+		print("Setting general")
 		self.state.setMode(DPHSMode.GENERAL)
 
 	def Button2Down(self, channel) :
-		pass
+		self.Execute()
+		print("Setting low power")
+		self.state.setMode(DPHSMode.LOW_POWER)
 
 	def Button3Down(self, channel) :
-		pass
+		self.Execute()
+		print("Quitting")
+		self.state.setMode(DPHSMode.EXIT)
 
 	def Button4Down(self, channel) :
 		pass
