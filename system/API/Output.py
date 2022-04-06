@@ -22,3 +22,9 @@ class Output :
 
 	def setAllDutyCycle(self,value: int) -> None:
 		self._pwm.setAllDutyCycle(value)
+
+	def setLowPower(self) -> None:
+		self._pwm.setLowPower()
+
+	def setNormalPower(self) -> None:
+		self._pwm.setNormalPower()
