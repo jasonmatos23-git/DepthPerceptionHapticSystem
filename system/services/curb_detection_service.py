@@ -7,26 +7,39 @@ from system.models.service import Service
 from system.models.routine import Routine
 from system.API.Input import Input
 from system.routine_container import RoutineContainer
-
-import cv2
-from system.services.depthmodel.depthmodel import DepthModel
-from numpy import ndarray
 from time import sleep
 
 class CurbDetectionService :
 
+
+	startThreshold: float = self.input_.GetAngledLidar() *  0.03281
 	def __init__(self, input_: Input, routineContainer: RoutineContainer) -> None:
-		self._depthModel = DepthModel((3, 3))
 		self.input_: Input = input_
-		self.routine: Routine = routineContainer.GetRoutine("CurbDetectionRoutine")
+		self.curbroutine: Routine = routineContainer.GetRoutine("CurbDetectionRoutine")
+
+	
+		#self.emergencyRoutine: Routine = routineContainer.GetRoutine("EmergencyResponse")
+		#self.linDistRoutine: Routine = routineContainer.GetRoutine("LinearDistanceRoutine")
+			
 
 	def Execute(self) -> None:
-		img: ndarray = self.input_.GetCameraImage() #getlidar-To do in depthmodel
+		measure : float = self.input_.GetAngledLidar() *  0.03281
+		
+		tmp: float = (self.startThreshold-measure)
+
+		while (abs(tmp)>=0.5):
+		#if(abs(tmp)>=6.0):
+			#step up
+			if tmp >= 0:
+				self.curbroutine.UpExecute()
+			else:
+				self.curbroutine.DownExecute()
+
 		# Write image for demo
 		# cv2.imwrite("input.png", cv2.cvtColor(img, cv2.COLOR_RGB2BGR))
 		# Run model
-		img_out: ndarray = self._depthModel.RunInference(img)
+		#measure_out: int = self._depthModel.RunInference(img)
 		# Write output for demonstration
 		# cv2.imwrite("output.png", img_out)
 		# Call routine
-		self.routine.Execute(img_out)
+		#self.routine.Execute(img_out)
