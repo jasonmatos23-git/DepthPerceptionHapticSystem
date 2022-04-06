@@ -5,6 +5,21 @@
 
 import pigpio
 from time import sleep
+from enum import Enum
+
+# C D E G notes and TEMPLATE_TUNE by: https://www.letsstartcoding.com/mary-little-lamb-speaker
+R = 0
+C = 523
+D = 587
+E = 659
+G = 784
+
+class AUDIO(Enum) :
+	TEMPLATE_TUNE = [ \
+		(E, 1), (D, 1), (C, 1), (D, 1), (E, 1), (E, 2), (E, 2), \
+		(D, 2), (D, 2), (D, 2), (E, 2), (G, 2), (G, 2), (G, 2), \
+		(E, 1), (D, 1), (C, 1), (D, 1), (E, 1), (E, 1), (E, 1), \
+		(E, 1), (D, 1), (D, 1), (E, 1), (D, 1), (C, 1)]
 
 class Speaker :
 
