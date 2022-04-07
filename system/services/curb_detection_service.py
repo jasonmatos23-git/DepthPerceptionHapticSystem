@@ -11,11 +11,15 @@ from time import sleep
 
 class CurbDetectionService :
 
+	
 
-	startThreshold: float = self.input_.GetAngledLidar() *  0.03281
+	#startDistance: float = self.input_.GetAngledLidar() *  0.03281
+	#startHeight : float = (self.input_.GetAngledLidar() * 0.5) * 0.03281
 	def __init__(self, input_: Input, routineContainer: RoutineContainer) -> None:
 		self.input_: Input = input_
 		self.curbroutine: Routine = routineContainer.GetRoutine("CurbDetectionRoutine")
+
+		startHeight : float = (self.input_.GetAngledLidar() * 0.5) * 0.03281
 
 	
 		#self.emergencyRoutine: Routine = routineContainer.GetRoutine("EmergencyResponse")
@@ -23,9 +27,11 @@ class CurbDetectionService :
 			
 
 	def Execute(self) -> None:
-		measure : float = self.input_.GetAngledLidar() *  0.03281
+		#measure : float = self.input_.GetAngledLidar() *  0.03281
+		measure: float = (self.input_.GetAngledLidar() * 0.5) * 0.03281
+
 		
-		tmp: float = (self.startThreshold-measure)
+		tmp: float = (self.startHeight-measure)
 
 		while (abs(tmp)>=0.5):
 		#if(abs(tmp)>=6.0):
