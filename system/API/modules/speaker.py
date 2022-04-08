@@ -33,7 +33,7 @@ class Speaker :
 	def __init__(self) :
 		self._pi: pigpio.pi = pigpio.pi()
 		self._frequency: int = 0	# Range of 0 ~ 1,000+ Hz
-		self._volume: int = 0		# Range of 0 ~ 1,000,000 (250,000 is loud)
+		self._volume: int = 5000	# Range of 0 ~ 1,000,000 (250,000 is loud)
 		self._pin: int = 12			# PWM0 of pin 12
 
 	def _updatePWM(self) -> None:
@@ -51,7 +51,7 @@ class Speaker :
 		self.setVolumeFrequency(self._volume, frequency)
 
 	def endTone(self) -> None:
-		self.setVolumeFrequency(0, 0)
+		self.setFrequency(0)
 
 	def playPattern(self, freqTimeMap: list) -> None:
 		for tup in freqTimeMap :
