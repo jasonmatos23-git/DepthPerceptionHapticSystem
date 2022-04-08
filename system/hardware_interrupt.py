@@ -47,6 +47,8 @@ class HardwareInterrupt :
 			callback = self.response.Button4Down, bouncetime = self._bouncetime)
 		GPIO.add_event_detect(self._conf.BUTTON_PIN_17, GPIO.RISING, \
 			callback = self.response.Button5Down, bouncetime = self._bouncetime)
+		# System ready indicator
+		self.response.systemReady()
 
 	def __del__(self) :
 		# Remove callbacks and configuration
@@ -55,4 +57,5 @@ class HardwareInterrupt :
 		GPIO.remove_event_detect(self._conf.BUTTON_PIN_15)
 		GPIO.remove_event_detect(self._conf.BUTTON_PIN_16)
 		GPIO.remove_event_detect(self._conf.BUTTON_PIN_17)
+		self.response.systemClose()
 		del(self._conf)
