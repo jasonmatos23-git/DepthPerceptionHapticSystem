@@ -9,11 +9,21 @@ from system.API.Output import Output
 from system.mode import DPHSMode
 from system.API.modules.speaker import AUDIO
 
+from time import sleep
+
 class ButtonResponse(Routine) :
 
 	def __init__(self, output_: Output, state: State) -> None:
 		self.output_: Output = output_
 		self.state: State = state
+
+	def systemReady(self) -> None:
+		self.output_.setAllDutyCycle(4095)
+		self.output_.playPattern(AUDIO.SYSTEM_READY)
+		self.output_.setAllDutyCycle(0)
+
+	def systemClose(self) -> None:
+		self.output_.playPattern(AUDIO.SYSTEM_CLOSE)
 
 	# On button press, should play an indication that a button
 	# press was registered, and change the state.
