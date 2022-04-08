@@ -20,6 +20,13 @@ class AUDIO(Enum) :
 		(D, 2), (D, 2), (D, 2), (E, 2), (G, 2), (G, 2), (G, 2), \
 		(E, 1), (D, 1), (C, 1), (D, 1), (E, 1), (E, 1), (E, 1), \
 		(E, 1), (D, 1), (D, 1), (E, 1), (D, 1), (C, 1)]
+	SYSTEM_READY = [(C, 0.5), (E, 0.5), (R, 0.1)]
+	SYSTEM_CLOSE = [(E, 0.5), (C, 0.5), (R, 0.1)]
+	BUTTON_PRESS = [(E, 0.3), (R, 0.1)]
+	GEN_MODE = [(C, 0.3), (R, 0.1)]
+	LOW_POWER = [(C, 0.3), (R, 0.15), (C, 0.3), (R, 0.1)]
+	DEMO_DISTANCE = [(C, 0.6), (R, 0.15), (C, 0.3), (R, 0.1)]
+	DEMO_CV = [(C, 0.3), (R, 0.15), (C, 0.6), (R, 0.1)]
 
 class Speaker :
 
