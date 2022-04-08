@@ -38,7 +38,7 @@ class Output :
 	def endTone(self) -> None:
 		self._speaker.endTone()
 
-	def playPattern(self, freqTimeMap: list = None, clip: AUDIO = None) -> None:
+	def playPattern(self, clip: AUDIO = None, freqTimeMap: list = None) -> None:
 		if AUDIO is not None :
 			self._speaker.playPattern(AUDIO.value)
 		elif freqTimeMap is not None :
