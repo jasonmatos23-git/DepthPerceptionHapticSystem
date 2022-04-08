@@ -23,35 +23,32 @@ class CurbDetectionService :
 		
 		startHeight : float = (self.input_.GetAngledLidar() * 0.5) * 0.03281
 		self.heightQueue.append(startHeight)
-	
-		#self.emergencyRoutine: Routine = routineContainer.GetRoutine("EmergencyResponse")
-		#self.linDistRoutine: Routine = routineContainer.GetRoutine("LinearDistanceRoutine")
-			
-
+		prev: float = startHeight
+		
 	def Execute(self) -> None:
-		#measure : float = self.input_.GetAngledLidar() *  0.03281
+	
 		measure: float = (self.input_.GetAngledLidar() * 0.5) * 0.03281
 
 		#remembering the last height
 		self.heightQueue.append(measure) 
 
-		while self.heightQueue.count()>5: 
+		while len(self.heightQueue)>5: 
 			self.heightQueue.pop()
 
-		prev: float = 0
+		dif: float = measure-prev
 		for next in self.heightQueue:
-			if prev != 0:
+			if dif != 0:
 				#count diff between next and prev if its between 6 and 12 inches  
-				if (abs(next - prev) >= 0.5) and (abs(next - prev) <= 1):
-					if (next - prev) < 0:
+				if (abs(dif) >= 0.5) and (abs(dif) <= 1.0):
+					if (next - prev) < 0.0:
 						self.curbroutine.UpExecute()
+						prev = measure
+						break
 					else: 
 						self.curbroutine.DownExecute()
+						prev = measure
+						break
 				else: #next measure too far from prev measure
-					self.heightQueue.clear()   #so forget all prevs
-					self.heightQueue.append(measure) #but keep current measure
 					break
-			prev = next
+			prev = measure
 		
-	#	if abs(count) < valid: #could not find 4 measurements in the same direction
-	#		return #not enough data points, return but keep what's heightQueue
