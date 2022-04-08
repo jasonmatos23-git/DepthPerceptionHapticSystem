@@ -7,6 +7,7 @@ from system.models.routine import Routine
 from system.mode import State
 from system.API.Output import Output
 from system.mode import DPHSMode
+from system.API.modules.speaker import AUDIO
 
 class ButtonResponse(Routine) :
 
@@ -19,20 +20,29 @@ class ButtonResponse(Routine) :
 	def Execute(self) -> None:
 		# Respond to general button press (speaker and/or haptic output)
 		print("Button press received.")
+		self.output_.playPattern(AUDIO.BUTTON_PRESS)
 
 	# Callback functions
 	def Button1Down(self, channel) :
 		self.Execute()
 		self.state.setMode(DPHSMode.GENERAL)
+		self.output_.playPattern(AUDIO.GEN_MODE)
 
 	def Button2Down(self, channel) :
-		pass
+		self.Execute()
+		self.state.setMode(DPHSMode.LOW_POWER)
+		self.output_.playPattern(AUDIO.LOW_POWER)
 
 	def Button3Down(self, channel) :
-		pass
+		self.Execute()
+		self.state.setMode(DPHSMode.DEMO_DISTANCE_ONLY)
+		self.output_.playPattern(AUDIO.DEMO_DISTANCE)
 
 	def Button4Down(self, channel) :
-		pass
+		self.Execute()
+		self.state.setMode(DPHSMode.DEMO_CV_ONLY)
+		self.output_.playPattern(AUDIO.DEMO_CV)
 
 	def Button5Down(self, channel) :
-		pass
+		self.Execute()
+		self.state.setMode(DPHSMode.EXIT)
