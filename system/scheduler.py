@@ -10,6 +10,8 @@ from system.models.mode import Mode
 from system.modes.general import GeneralMode
 from system.modes.lowpower import LowPowerMode
 from system.modes.outdoor import OutdoorMode
+from system.modes.cv_only import CVMode
+from system.modes.distance_only import LidarMode
 
 class Scheduler :
 
@@ -18,6 +20,8 @@ class Scheduler :
 		self.generalMode: Mode = GeneralMode(state.modeChangedEvent, serviceContainer)
 		self.lowpowerMode: Mode = LowPowerMode(state.modeChangedEvent, \
 			serviceContainer.input_, serviceContainer.routineContainer.output_)
+		self.cvMode: Mode = CVMode(state.modeChangedEvent, serviceContainer)
+		self.lidarMode: Mode = LidarMode(state.modeChangedEvent, serviceContainer)
 
 	# NOTE: If calling Run() after the initial call ensure that
 	#		the state is changed via setMode() to a mode other than
@@ -30,11 +34,13 @@ class Scheduler :
 			if currentMode == DPHSMode.LOW_POWER :
 				self.lowpowerMode.Execute()
 			elif currentMode == DPHSMode.GENERAL :
-				self.generalMode.enter()
 				self.generalMode.Execute()
-				self.generalMode.exit()
 			elif currentMode == DPHSMode.OUTDOOR :
 				pass	# Execute outdoor
+			elif currentMode == DPHSMode.DEMO_DISTANCE_ONLY :
+				self.lidarMode.Execute()
+			elif currentMode == DPHSMode.DEMO_CV_ONLY :
+				self.cvMode.Execute()
 			elif currentMode == DPHSMode.EXIT :
 				self.state.modeChangedEvent.clear()
 				break

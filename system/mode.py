@@ -10,6 +10,8 @@ class DPHSMode(Enum) :
 	GENERAL = auto()
 	OUTDOOR = auto()
 	LOW_POWER = auto()
+	DEMO_DISTANCE_ONLY = auto()
+	DEMO_CV_ONLY = auto()
 	EXIT = auto()
 
 class State :
