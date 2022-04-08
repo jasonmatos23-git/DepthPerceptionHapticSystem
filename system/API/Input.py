@@ -40,3 +40,13 @@ class Input :
 
 	def GetAngledLidar(self) -> int:
 		return self._lidar.GetAngledLidar()
+
+	# Low power
+	def setLowPower(self) -> None:
+		self._camera.Disable()
+		self._lidar.setLowPowerForward()	# TODO: Set both to LPM
+
+	# Normal power
+	def setNormalPower(self) -> None:
+		self._camera.Enable()
+		self._lidar.setNormalPowerForward()	# TODO: Set both to normal

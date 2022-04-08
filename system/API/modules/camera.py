@@ -28,6 +28,8 @@ class Camera :
 		self.__del__()
 
 	def GetCameraImage(self) -> ndarray:
+		if self._camera is None :
+			raise RuntimeError("Camera is not enabled.")
 		img: ndarray = empty((self._camera.resolution[1] * self._camera.resolution[0] * 3,), dtype=uint8)
 		self._camera.capture(img, format="rgb", use_video_port=True)
 		return img.reshape((self._camera.resolution[1], self._camera.resolution[0], 3))

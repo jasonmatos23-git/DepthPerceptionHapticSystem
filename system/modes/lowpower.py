@@ -24,6 +24,11 @@ class LowPowerMode(Mode) :
 		pass
 
 	def Execute(self) -> None:
-		# TODO: Enable device LPMs
+		# Enable LPMs
+		self._input_.setLowPower()
+		self._output_.setLowPower()
+		# Wait for mode change
 		self._modeChangedEvent.wait()
-		# TODO: Disable device LPMs
+		# Disable LPMs
+		self._input_.setNormalPower()
+		self._output_.setNormalPower()

@@ -16,6 +16,8 @@ class Scheduler :
 	def __init__(self, serviceContainer: ServiceContainer, state: State) :
 		self.state: State = state
 		self.generalMode: Mode = GeneralMode(state.modeChangedEvent, serviceContainer)
+		self.lowpowerMode: Mode = LowPowerMode(state.modeChangedEvent, \
+			serviceContainer.input_, serviceContainer.routineContainer.output_)
 
 	# NOTE: If calling Run() after the initial call ensure that
 	#		the state is changed via setMode() to a mode other than
@@ -26,7 +28,7 @@ class Scheduler :
 		while True :
 			currentMode = self.state.getMode()
 			if currentMode == DPHSMode.LOW_POWER :
-				pass	# Execute LPM
+				self.lowpowerMode.Execute()
 			elif currentMode == DPHSMode.GENERAL :
 				self.generalMode.enter()
 				self.generalMode.Execute()
