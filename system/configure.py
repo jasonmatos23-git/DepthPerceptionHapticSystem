@@ -28,11 +28,11 @@ class Configuration :
 
 		#May encounter error with pin 99 as it is already default at low and powers off the system by manufacturer
 		#replace to pull_up_down=GPIO.PUD_UP for a pull up if needed
-		GPIO.setup(self.BUTTON_PIN_6, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-		GPIO.setup(self.BUTTON_PIN_14, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-		GPIO.setup(self.BUTTON_PIN_15, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-		GPIO.setup(self.BUTTON_PIN_16, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-		GPIO.setup(self.BUTTON_PIN_17, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+		GPIO.setup(self.BUTTON_PIN_6, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+		GPIO.setup(self.BUTTON_PIN_14, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+		GPIO.setup(self.BUTTON_PIN_15, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+		GPIO.setup(self.BUTTON_PIN_16, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+		GPIO.setup(self.BUTTON_PIN_17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 		#-----------------------
 		#Camera Pins I/O
