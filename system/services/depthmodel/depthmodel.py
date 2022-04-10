@@ -60,8 +60,8 @@ class DepthModel :
 		self._exp_N_levels = 4		# Discrete levels of output on [0, N)
 		# Floor, edge, and cieling box filter
 		grad_magnitude: np.ndarray = 900.0	# Experimentally estimated floor gradient magnitude
-		ones: np.ndarray = np.pad(ones, ((32,84),(32,32)), mode='linear_ramp', end_values=0)
-		self._floor_filter: np.ndarray = (1 - ones) * grad_magnitude
+		ramp: np.ndarray = np.pad(np.ones((140,192)), ((32,84),(32,32)), mode='linear_ramp', end_values=0)
+		self._floor_filter: np.ndarray = (1 - ramp) * grad_magnitude
 		# History for Schmitt-like trigger
 		self._history: np.ndarray = np.zeros((3,3))
 
