@@ -3,7 +3,6 @@
 # File name:		curb_detection_service.py
 # Description:		
 
-from turtle import pos
 from system.models.service import Service
 from system.models.routine import Routine
 from system.API.Input import Input
