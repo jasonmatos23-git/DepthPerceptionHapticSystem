@@ -32,6 +32,22 @@ class DepthModel :
 		filt_min: np.float32 = filt.min()
 		return (filt-filt_min)/(filt_max-filt_min)
 
+	# Maxpool uses 85x85 kernel on 256x256 image ignoring
+	# right and bottom-most pixels.
+	def maxpool(self, array) -> np.ndarray:
+		res: np.ndarray = np.empty((3,3))
+		for i in range(0, 3) :
+			for j in range(0, 3) :
+				res[i,j] = array[i*85:(i+1)*85, j*85:(j+1)*85].max()
+		return res
+
+	# Locks map values to previous value unless decreased to zero.
+	# Set the output map to 0 if the input map is set to 0.
+	# Otherwise, only allow increases to the depth map.
+	def schmitt_trigger(self, array_in: np.ndarray) -> np.ndarray:
+		temp: np.ndarray = array_in - self._history
+		return self._history + np.logical_or((temp > 0), (array_in == 0))*temp
+
 	def __init__(self) -> None:
 		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt.mnn")
 		self._session: MNN.Session = self._interpreter.createSession()
@@ -39,18 +55,15 @@ class DepthModel :
 		self._output_tensor: MNN.Tensor = self._interpreter.getSessionOutput(self._session)
 		self._mean: list = [0.485, 0.456, 0.406]
 		self._std: list = [0.229, 0.224, 0.225]
-		self._exp_mean = 500.0		# Experimentally determined mean (very roughly 2 meters)
-		self._exp_maximum = 1000.0	# Experimentally determined maximum estimated closeness
-		self._exp_N_levels = 4		# Discrete levels of output
-
-	def _RunDiscretization(self, img: np.ndarray) :
-		return self._exp_N_levels*(img - self._exp_mean)/(self._exp_maximum - self._exp_mean)
-
-	def _RunClipping(self, img: np.ndarray) :
-		return np.clip(img, self._exp_mean, self._exp_maximum)
-
-	def _RunInference(self, img: np.ndarray) :
-		pass
+		self._exp_mean = 700.0		# Experimentally determined mean (very roughly 2 meters)
+		self._exp_maximum = 1200.0	# Experimentally determined maximum estimated closeness
+		self._exp_N_levels = 4		# Discrete levels of output on [0, N)
+		# Floor, edge, and cieling box filter
+		grad_magnitude: np.ndarray = 900.0	# Experimentally estimated floor gradient magnitude
+		ones: np.ndarray = np.pad(ones, ((32,84),(32,32)), mode='linear_ramp', end_values=0)
+		self._floor_filter: np.ndarray = (1 - ones) * grad_magnitude
+		# History for Schmitt-like trigger
+		self._history: np.ndarray = np.zeros((3,3))
 
 	# Get depth map from an image
 	def RunInference(self, img: np.ndarray) -> np.ndarray:
@@ -70,10 +83,14 @@ class DepthModel :
 			np.empty((1,256,256,1), dtype=np.float32), MNN.Tensor_DimensionType_Tensorflow)
 		self._output_tensor.copyToHostTensor(tmp_output)
 		output: np.ndarray = tmp_output.getNumpyData()
-		# Clip
-		clipped: np.ndarray = np.clip(output, 600.0, 1000.0)
-		# Min-max normalization on result
-		norm: np.ndarray = self._RunDiscretization(clipped)
-		reduced_size: np.ndarray = cv2.resize(norm, (3, 3), interpolation=cv2.INTER_LINEAR)
-		# Ceil to nearest int on [0, N]
-		return np.ceil(reduced_size)
+		# Remove floor and clip
+		output = output - self._floor_filter
+		clipped: np.ndarray = np.clip(output, self._exp_mean, self._exp_maximum)
+		# Discretize
+		discrete: np.ndarray = self._exp_N_levels * ((clipped - self._exp_mean)/ \
+			(1 + self._exp_maximum - self._exp_mean))
+		# Maxpool floored on [0, self._exp_N_levels)
+		maxpooled: np.ndarray = np.floor(self.maxpool(discrete))
+		# Schmitt trigger
+		schmitt: np.ndarray = self.schmitt_trigger(maxpooled)
+		return schmitt
