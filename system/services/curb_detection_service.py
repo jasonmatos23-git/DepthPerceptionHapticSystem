@@ -36,7 +36,7 @@ class CurbDetectionService :
 		self.heightQueue.append(measure) 
 
 		while len(self.heightQueue)>5: 
-			self.heightQueue.pop()
+			self.heightQueue.pop(0)
 
 
 
@@ -53,13 +53,13 @@ class CurbDetectionService :
 				break
 			if posiDiff> 0:
 				#count diff between next and prev if its between 6 and 12 inches  
-				if (abs(dif) >= 0.3) and (abs(dif) <= 1.0):
+				if (dif >= 0.3) and (dif <= 1.0):
 					self.curbroutine.UpExecute()
 					break
 				else: 
 					break
 			else: 
-				if (abs(dif) <= -0.3) and (abs(dif) >= -1.0):
+				if (dif <= -0.3) and (dif >= -1.0):
 					self.curbroutine.DownExecute()
 					break
 				else:
