@@ -46,7 +46,7 @@ class DepthModel :
 	# Otherwise, only allow increases to the depth map.
 	def schmitt_trigger(self, array_in: np.ndarray) -> np.ndarray:
 		temp: np.ndarray = array_in - self._history
-		return self._history + np.logical_or((temp > 0), (array_in == 0))*temp
+		return self._history * (array_in != 0) + (temp > 0) * temp
 
 	def __init__(self) -> None:
 		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt.mnn")
