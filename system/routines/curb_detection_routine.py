@@ -14,8 +14,9 @@ from time import sleep
 class CurbDetectionRoutine(Routine) :
 
 	# Initialization of vars
-	def __init__(self, output_: Output, state: State) -> None:
+	def __init__(self, output_: Output=None, state: State=None) -> None:
 		self.output_: Output = output_
+		self.state: State = state
 
 	#Step Up
 	def UpExecute(self)-> None:
