@@ -3,6 +3,7 @@
 # File name:		curb_detection_service.py
 # Description:		
 
+from turtle import pos
 from system.models.service import Service
 from system.models.routine import Routine
 from system.API.Input import Input
@@ -51,15 +52,15 @@ class CurbDetectionService :
 		for next in self.heightQueue:
 			if posiDiff == 0:
 				break
-			if posiDiff> 0:
+			elif posiDiff > 0:
 				#count diff between next and prev if its between 6 and 12 inches  
 				if (dif >= 0.3) and (dif <= 1.0):
 					self.curbroutine.UpExecute()
 					break
 				else: 
 					break
-			else: 
-				if (dif <= -0.3) and (dif >= -1.0):
+			elif posiDiff < 0: 
+				if (dif >= 0.3) and (dif <= 1.0):
 					self.curbroutine.DownExecute()
 					break
 				else:
