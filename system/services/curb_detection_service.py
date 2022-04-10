@@ -23,14 +23,15 @@ class CurbDetectionService :
 			return
 		self.curbroutine: Routine = routineContainer.GetRoutine("CurbDetectionRoutine")
 
-		
-		startHeight : float = (self.input_.GetAngledLidar() * 0.5) * 0.03281
+		self.lidarCapture= self.input_.GetAngledLidar()
+		startHeight : float = (self.lidarCapture * 0.5) * 0.03281
 		self.heightQueue.append(startHeight)
-		#prev: float = startHeight
-		
+		if self.lidarCapture == 0 or self.lidarCapture < 0:
+			return
 	def Execute(self) -> None:
-	
-		measure: float = (self.input_.GetAngledLidar() * 0.5) * 0.03281
+		if self.lidarCapture == 0 or self.lidarCapture < 0:
+			return
+		measure: float = (self.lidarCapture * 0.5) * 0.03281
 
 		#remembering the last height
 		self.heightQueue.append(measure) 
@@ -55,12 +56,16 @@ class CurbDetectionService :
 				#count diff between next and prev if its between 6 and 12 inches  
 				if (dif >= 0.3) and (dif <= 1.0):
 					self.curbroutine.UpExecute()
+					while len(self.heightQueue)>1: 
+						self.heightQueue.pop(0)
 					break
 				else: 
 					break
 			elif posiDiff < 0: 
 				if (dif >= 0.3) and (dif <= 1.0):
 					self.curbroutine.DownExecute()
+					while len(self.heightQueue)>1: 
+						self.heightQueue.pop(0)
 					break
 				else:
 					break
