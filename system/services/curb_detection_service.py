@@ -56,7 +56,7 @@ class CurbDetectionService :
 			elif posiDiff > 0:
 				#count diff between next and prev if its between 6 and 12 inches  
 				if (dif >= 0.3) and (dif <= 1.0):
-					self.curbroutine.UpExecute()
+					self.curbroutine.DownExecute()
 					while len(self.heightQueue)>1: 
 						self.heightQueue.pop(0)
 					break
@@ -64,7 +64,7 @@ class CurbDetectionService :
 					break
 			elif posiDiff < 0: 
 				if (dif >= 0.3) and (dif <= 1.0):
-					self.curbroutine.DownExecute()
+					self.curbroutine.UpExecute()
 					while len(self.heightQueue)>1: 
 						self.heightQueue.pop(0)
 					break
