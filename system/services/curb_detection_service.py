@@ -19,16 +19,17 @@ class CurbDetectionService :
 	def __init__(self, input_: Input = None, routineContainer: RoutineContainer = None) -> None:
 		self.input_: Input = input_
 		self.routine:Routine = None
+		self.lidarCapture= 0
 		if routineContainer is None:
 			return
 		self.curbroutine: Routine = routineContainer.GetRoutine("CurbDetectionRoutine")
 
-		self.lidarCapture= self.input_.GetAngledLidar()
-		startHeight : float = (self.lidarCapture * 0.5) * 0.03281
-		self.heightQueue.append(startHeight)
-		if self.lidarCapture == 0 or self.lidarCapture < 0:
-			return
+		
+		
+		
+		
 	def Execute(self) -> None:
+		self.lidarCapture= self.input_.GetAngledLidar()
 		if self.lidarCapture == 0 or self.lidarCapture < 0:
 			return
 		measure: float = (self.lidarCapture * 0.5) * 0.03281
