@@ -7,114 +7,120 @@
 from time import sleep
 from smbus2 import SMBus, i2c_msg
 from enum import Enum
-from typing import Dict, List
 
-class _Addresses(Enum) :
-	FORWARD = 0x10
-	ANGLED = None	# Will be 0x10. Forward address will be modified
+# Exceptions for lidar
+class LiDARException(Exception) :
+	pass
 
+class LowSignalStrength(LiDARException) :
+	pass
+
+class SignalStrengthSaturation(LiDARException) :
+	pass
+
+class AmbientLightSaturation(LiDARException) :
+	pass
+
+# LiDAR superclass
 class LiDAR :
 
 	# Request/Response i2c messages
-	# Forward LiDAR
-	_reqForwardLidar: i2c_msg = i2c_msg.write(_Addresses.FORWARD.value, \
-		[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
-	_resForwardLidar: i2c_msg = i2c_msg.read(_Addresses.FORWARD.value, 9) # 9 result bytes
-	# Angled LiDAR
-	# _reqAngledLidar: i2c_msg = i2c_msg.write(_Addresses.ANGLED.value, \
-	# 	[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
-	# _resAngledLidar: i2c_msg = i2c_msg.read(_Addresses.ANGLED.value, 9) # 9 result bytes
+	# Note: 0x00 is used as a PLACEHOLDER address
+	# 	Overwritten in subclasses below
+	# Benewake TFMini-S command to read distance (cm)
+	_reqLidar: i2c_msg = i2c_msg.write(0x00, [0x5A, 0x05, 0x00, 0x01, 0x60])
+	# 9 result bytes
+	_resLidar: i2c_msg = i2c_msg.read(0x00, 9)
 
-	# Low power consumption mode i2c messages
-	# Forward LiDAR
-	_reqLowPowerForward: i2c_msg = i2c_msg.write(_Addresses.FORWARD.value, \
-		[0x5A, 0x06, 0x35, 0x01, 0x00, 0x96]) # Set low power mode (X ranges 0 - A, freq <= 10 Hz)
-	_resLowPowerForward: i2c_msg = i2c_msg.read(_Addresses.FORWARD.value, 6) # 6 result bytes
-	_reqNormalPowerForward: i2c_msg = i2c_msg.write(_Addresses.FORWARD.value, \
-		[0x5A, 0x06, 0x35, 0x00, 0x00, 0x95]) # Set normal
-	_resNormalPowerForward: i2c_msg = i2c_msg.read(_Addresses.FORWARD.value, 6) # 6 result bytes
-	# Angled LiDAR
-	# _reqLowPowerAngled: i2c_msg = i2c_msg.write(_Addresses.ANGLED.value, \
-	# 	[0x5A, 0x06, 0x35, 0x01, 0x00, 0x96]) # Set low power mode (frequency must be <= 10 Hz)
-	# _resLowPowerAngled: i2c_msg = i2c_msg.read(_Addresses.ANGLED.value, 6) # 6 result bytes
-	# _reqNormalPowerAngled: i2c_msg = i2c_msg.write(_Addresses.ANGLED.value, \
-	# 	[0x5A, 0x06, 0x35, 0x00, 0x00, 0x95]) # Set normal
-	# _resNormalPowerAngled: i2c_msg = i2c_msg.read(_Addresses.ANGLED.value, 6) # 6 result bytes
+	# Power consumption mode i2c messages
+	# Note: buf[5]s low-byte checksum must be updated w.r.t address in classes below
+	# Set modes
+	_reqNormalPower: i2c_msg = i2c_msg.write(0x00, [0x5A, 0x06, 0x35, 0x00, 0x00, 0x95])
+	_reqLowPower: i2c_msg = i2c_msg.write(0x00, [0x5A, 0x06, 0x35, 0x01, 0x00, 0x96])
+	# 6 result bytes
+	_resPower: i2c_msg = i2c_msg.read(0x00, 6)
 
-	_AddressMsgMap: Dict[_Addresses, List[i2c_msg]] = \
-		{
-			_Addresses.FORWARD : [ \
-				_reqForwardLidar, _resForwardLidar, \
-				_reqLowPowerForward, _resLowPowerForward, \
-				_reqNormalPowerForward, _resNormalPowerForward]
-		}
+	# Recommended wait time for results
+	_waitTime: int = 0.001
 
-	def __init__(self, bus: SMBus) :
-		self._bus: SMBus = bus
-
-	def _getLidar(self, lidar: _Addresses) -> int:
+	def _getDistance(self) -> int:
 		# Send request/response
-		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][0])
-		sleep(0.001)	# Recommended wait time for result
-		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][1])
+		self._bus.i2c_rdwr(self._reqLidar)
+		sleep(self._waitTime)	# Recommended wait time for result
+		self._bus.i2c_rdwr(self._resLidar)
 		# Filter result for distance
-		res: i2c_msg = self._AddressMsgMap[lidar][1]
-		return (256 * int.from_bytes(res.buf[3], "big")) + int.from_bytes(res.buf[2], "big")
+		return (256 * int.from_bytes(self._resLidar.buf[3], "big")) + \
+			int.from_bytes(self._resLidar.buf[2], "big")
 
-	def _GetLidar(self, lidar: _Addresses) -> int:
-		result: int = self._getLidar(lidar)
-		if result >= 0 :
+	def GetLidar(self) -> int:
+		result: int = self._getDistance()
+		if result < 65532 :
 			return result
-		elif result == -1 :
-			raise RuntimeError(lidar.name + " Unstable signal (strength < 100)")
-		elif result == -2 :
-			raise RuntimeError(lidar.name + " Signal strength saturation")
-		elif result == -4 :
-			raise RuntimeError(lidar.name + " Ambient light saturation")
-		else :
-			raise RuntimeError(lidar.name + " Unknown error in LiDAR result")
+		elif result == 65535 :
+			raise LowSignalStrength("LiDAR Unstable signal (strength < 100)")
+		elif result == 65534 :
+			raise SignalStrengthSaturation("LiDAR Signal strength saturation")
+		elif result == 65532 :
+			raise AmbientLightSaturation("LiDAR Ambient light saturation")
 
-	def GetForwardLidar(self) -> int:
-		return self._GetLidar(_Addresses.FORWARD)
-
-	def GetAngledLidar(self) -> int:
-		raise NotImplementedError("Angled LiDAR address has not yet been set.")
-		# return self._GetLidar(_Addresses.ANGLED)
-
-	def _setNormalPower(self, lidar: _Addresses) -> bool:
+	def setActive(self) -> bool:
 		# Send request/response
-		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][4])
-		sleep(0.001)	# Recommended wait time for result
-		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][5])
-		# Compare response
-		return self._AddressMsgMap[lidar][4].buf[3] == self._AddressMsgMap[lidar][5].buf[3]
-
-	def _setLowPower(self, lidar: _Addresses) -> bool:
-		# Send request/response
-		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][2])
-		sleep(0.001)	# Recommended wait time for result
-		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][3])
-		# Compare response
-		return self._AddressMsgMap[lidar][3].buf[3] == self._AddressMsgMap[lidar][2].buf[3]
-
-	def setLowPowerForward(self) -> bool:
-		return self._setLowPower(_Addresses.FORWARD)
-
-	def setLowPowerAngled(self) -> bool:
-		raise NotImplementedError("Angled LiDAR address has not yet been set.")
-		# return self._setLowPower(_Addresses.ANGLED)
-
-	def setNormalPowerForward(self) -> bool:
-		return self._setNormalPower(_Addresses.FORWARD)
-
-	def setNormalPowerAngled(self) -> bool:
-		raise NotImplementedError("Angled LiDAR address has not yet been set.")
-		# return self._setNormalPower(_Addresses.ANGLED)
-
-	def setNormalPower(self) -> bool:
-		# 'and' used since dangerous if one lidar
-		# does not return from LPM
-		return setNormalPowerAngled() and setNormalPowerForward()
+		self._bus.i2c_rdwr(self._reqNormalPower)
+		sleep(self._waitTime)
+		self._bus.i2c_rdwr(self._resPower)
+		# Compare buffer checksums
+		return self._resPower.buf[5] == self._reqNormalPower.buf[5]
 
 	def setLowPower(self) -> bool:
-		return setLowPowerAngled() or setLowPowerForward()
+		# Send request/response
+		self._bus.i2c_rdwr(self._reqLowPower)
+		sleep(self._waitTime)
+		self._bus.i2c_rdwr(self._resPower)
+		# Compare buffer checksums
+		return self._resPower.buf[5] == self._reqLowPower.buf[5]
+
+	def close(self) -> None:
+		if self._bus is not None :
+			self.setLowPower()
+			self._bus.close()
+			self._bus = None
+
+	def __init__(self, bus_no: int = 1) :
+		self._bus: SMBus = SMBus(bus_no)
+
+	def __enter__(self) -> None:
+		return self
+
+	def __exit__(self, err_type, err, traceback) -> None:
+		self.close()
+
+	def __del__(self) -> None:
+		self.close()
+
+class ForwardLiDAR(LiDAR) :
+
+	# Request/Response i2c messages
+	_reqLidar: i2c_msg = i2c_msg.write(0x10, [0x5A, 0x05, 0x00, 0x01, 0x60])
+	# 9 result bytes
+	_resLidar: i2c_msg = i2c_msg.read(0x10, 9)
+
+	# Power consumption mode i2c messages
+	# Set modes
+	_reqNormalPower: i2c_msg = i2c_msg.write(0x10, [0x5A, 0x06, 0x35, 0x00, 0x00, 0xa5])
+	_reqLowPower: i2c_msg = i2c_msg.write(0x10, [0x5A, 0x06, 0x35, 0x01, 0x00, 0xa6])
+	# 6 result bytes
+	_resPower: i2c_msg = i2c_msg.read(0x10, 6)
+
+class AngledLiDAR(LiDAR) :
+
+	# Request/Response i2c messages
+	_reqLidar: i2c_msg = i2c_msg.write(0x11, [0x5A, 0x05, 0x00, 0x01, 0x60])
+	# 9 result bytes
+	_resLidar: i2c_msg = i2c_msg.read(0x11, 9)
+
+	# Power consumption mode i2c messages
+	# Set modes
+	_reqNormalPower: i2c_msg = i2c_msg.write(0x11, [0x5A, 0x06, 0x35, 0x00, 0x00, 0xa6])
+	_reqLowPower: i2c_msg = i2c_msg.write(0x11, [0x5A, 0x06, 0x35, 0x01, 0x00, 0xa7])
+	# 6 result bytes
+	_resPower: i2c_msg = i2c_msg.read(0x11, 6)
