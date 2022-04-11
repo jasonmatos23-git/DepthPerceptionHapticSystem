@@ -9,23 +9,33 @@ from time import sleep
 
 class Camera :
 
-	def __init__(self) -> None:
-		self._camera: PiCamera = PiCamera()
-		self._camera.resolution = (256, 256)	# Input tensor shape is (1,256,256,3)
-		self._camera.framerate = 24
-		sleep(2)	# Camera setup time
-
-	def __del__(self) -> None:
-		if not (self._camera is None) :
-			self._camera.close()
-			self._camera = None
-
-	def Enable(self) -> None:
+	def setActive(self) -> None:
 		if self._camera is None :
 			self.__init__()
 
-	def Disable(self) -> None:
-		self.__del__()
+	def setLowPower(self) -> None:
+		self.close()
+
+	def close(self) -> None:
+		if self._camera is not None :
+			self._camera.close()
+			self._camera = None
+
+	def __init__(self) -> None:
+		self._camera: PiCamera = PiCamera()
+		self._camera.resolution = (256, 256)	# Input tensor shape is (1,256,256,3)
+		self._camera.rotation = 90
+		self._camera.framerate = 24
+		sleep(2)	# Camera setup time
+
+	def __enter__(self) -> None:
+		return self
+
+	def __del__(self) -> None:
+		self.close()
+
+	def __exit__(self, err_type, err, traceback) -> None:
+		self.close()
 
 	def GetCameraImage(self) -> ndarray:
 		if self._camera is None :
