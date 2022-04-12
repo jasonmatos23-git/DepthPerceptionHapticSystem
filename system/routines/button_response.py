@@ -35,4 +35,5 @@ class ButtonResponse(Routine) :
 		pass
 
 	def Button5Down(self, channel) -> None:
-		pass
+		self.Execute()
+		self.state.setMode(DPHSMode.EXIT)
