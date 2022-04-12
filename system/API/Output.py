@@ -49,7 +49,7 @@ class Output :
 
 	# PUBLIC FUNCTIONS
 	# Motor control
-	def setDutyCycle(self, location: Motor, value: int) -> None:
+	def setDutyCycle(self, location, value: int) -> None:
 		self._pwm.setDutyCycle(location, value)
 
 	def setAllDutyCycle(self, value: int) -> None:
