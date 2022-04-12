@@ -90,7 +90,7 @@ class PWM :
 
 	def setDutyCycle(self, location, value: int) -> None:
 		if isinstance(location, Motor) :
-			location = Motor.value
+			location = location.value
 		if value >= 0 and value <= 4095 :
 			self._bus.write_byte_data(self._address, PWM.LocationRegisterMap[location][0].value, \
 				(value & 0xf00)>>8)	# Write upper 4 bits to OFF_H
