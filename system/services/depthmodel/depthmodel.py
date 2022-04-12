@@ -94,4 +94,5 @@ class DepthModel :
 		maxpooled: np.ndarray = np.floor(self.maxpool(discrete))
 		# Schmitt trigger
 		schmitt: np.ndarray = self.schmitt_trigger(maxpooled)
-		return schmitt
+		# Return percentage of haptic response
+		return schmitt/(self._exp_N_levels - 1)

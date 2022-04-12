@@ -7,6 +7,7 @@ from system.models.service import Service
 from system.models.routine import Routine
 from system.API.Input import Input
 from system.routine_container import RoutineContainer
+from system.API.modules.LiDAR import LiDARException
 
 class DistanceService(Service) :
 
@@ -16,18 +17,23 @@ class DistanceService(Service) :
 	def __init__(self, input_: Input = None, routineContainer: RoutineContainer = None) -> None:
 		self.input_: Input = input_
 		self.emergencyRoutine: Routine = None
+		self.linDistRoutine: Routine = None
 		if routineContainer is None :
 			return
-		self.emergencyRoutine: Routine = routineContainer.GetRoutine("EmergencyResponse")
-		self.linDistRoutine: Routine = routineContainer.GetRoutine("LinearDistanceRoutine")
+		self.emergencyRoutine = routineContainer.GetRoutine("EmergencyResponse")
+		self.linDistRoutine = routineContainer.GetRoutine("LinearDistanceRoutine")
 
 	def Execute(self) -> None:
-		distance: float = self.input_.GetForwardLidar()
-		if distance <= 3 :	# Ignore abnormal distances
+		try :
+			distance: float = self.input_.GetForwardLidar()
+		except LiDARException :
 			return
 		distance = distance * 0.03281	# Conversion from cm to feet
 		# Lock execution if threshold distance reached
 		while distance < self.emergencyThreshold :
 			self.emergencyRoutine.Execute()
-			distance = self.input_.GetForwardLidar() * 0.03281
+			try :
+				distance = self.input_.GetForwardLidar() * 0.03281
+			except LiDARException :
+				distance = self.emergencyThreshold
 		self.linDistRoutine.Execute(distance)

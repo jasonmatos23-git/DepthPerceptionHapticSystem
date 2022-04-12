@@ -13,15 +13,12 @@ from numpy import ndarray, float32, uint8
 class DepthPerceptionRoutine(Routine) :
 
 	# Initialization of vars
-	def __init__(self, output_: Output, state: State) -> None:
+	def __init__(self, output_: Output = None, state: State = None) -> None:
 		self.output_: Output = output_
 
 	# 1:1 map between sections of image to output
 	# Currently set to a linear continuous map
 	def Execute(self, depth_map: ndarray) -> None:
-		dmin = depth_map.min()
-		dmax = depth_map.max()
-		depth_map = (4095 * (depth_map - dmin) / (dmax - dmin)).astype("uint8")
 		self.output_.setDutyCycle(Motor.UPPER_LEFT, depth_map[0,0])
 		self.output_.setDutyCycle(Motor.UPPER_MIDDLE, depth_map[0,1])
 		self.output_.setDutyCycle(Motor.UPPER_RIGHT, depth_map[0,2])
