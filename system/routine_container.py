@@ -9,7 +9,6 @@ from system.routines.routinelist import *
 from system.mode import State
 from system.API.Output import Output
 from typing import Dict
-from smbus2 import SMBus
 
 # Manages instantiation specific to routines
 class RoutineContainer(Container) :
@@ -18,12 +17,12 @@ class RoutineContainer(Container) :
 
 	# System instance of State passed to allow Scheduler
 	# to poll state via system, to avoid circular dependence
-	def __init__(self, state: State = None, bus: SMBus = None) :
+	def __init__(self, state: State = None, out: Output = None) :
 		self.instanceMap: Dict[str, Executable] = {}
-		self.output_: Output = None
-		if bus is not None :
-			self.output_: Output = Output(bus)
+		self.output_: Output = out
 		self.state: State = state
+		if out is None :
+			self.output_: Output = Output()
 
 	def _newExecutable(self, clss: type) -> Executable:
 		return clss(self.output_, self.state)
