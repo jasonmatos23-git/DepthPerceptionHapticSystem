@@ -14,7 +14,7 @@ D = 587
 E = 659
 G = 784
 
-class AUDIO(Enum) :
+class Audio(Enum) :
 	TEMPLATE_TUNE = [(C, 1), (R, 0.1), \
 					(D, 1), (R, 0.1), \
 					(E, 1), (R, 0.1), \
