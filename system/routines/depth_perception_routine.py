@@ -8,7 +8,7 @@ from system.mode import State
 from system.API.Output import Output
 from system.API.modules.PWM import PWM, Motor	# Used for Motor Enum
 
-from numpy import ndarray, float32, uint8
+from numpy import ndarray
 
 class DepthPerceptionRoutine(Routine) :
 
@@ -19,6 +19,7 @@ class DepthPerceptionRoutine(Routine) :
 	# 1:1 map between sections of image to output
 	# Currently set to a linear continuous map
 	def Execute(self, depth_map: ndarray) -> None:
+		depth_map = (depth_map * 4095).astype("int")
 		self.output_.setDutyCycle(Motor.UPPER_LEFT, depth_map[0,0])
 		self.output_.setDutyCycle(Motor.UPPER_MIDDLE, depth_map[0,1])
 		self.output_.setDutyCycle(Motor.UPPER_RIGHT, depth_map[0,2])
