@@ -18,6 +18,7 @@ class ButtonResponse(Routine) :
 	# press was registered, and change the state.
 	def Execute(self) -> None:
 		# Respond to general button press (speaker and/or haptic output)
+		self.output_.playPattern(Audio.BUTTON_DOWN)
 		print("Button press received.")
 
 	# Callback functions

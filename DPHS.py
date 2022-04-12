@@ -9,14 +9,17 @@ from system.scheduler import Scheduler
 from system.hardware_interrupt import HardwareInterrupt
 from system.API.Input import Input
 from system.API.Output import Output
+from system.API.modules.speaker import Audio
 
 def main() -> int:
-	input_: Input = Input()
 	output_: Output = Output()
+	output_.playPattern(Audio.SYSTEM_STARTUP)
+	input_: Input = Input()
 	DPHS: System = System(input_, output_)
 	scheduler: Scheduler = Scheduler(DPHS)
 	hinterrupt: HardwareInterrupt = HardwareInterrupt(DPHS.routineContainer)
 	scheduler.Run()
+	output_.playPattern(Audio.SYSTEM_SHUTDOWN)
 	return 0
 
 if __name__ == "__main__" :
