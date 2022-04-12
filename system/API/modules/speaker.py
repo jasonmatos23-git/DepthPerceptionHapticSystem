@@ -22,8 +22,10 @@ class Audio(Enum) :
 
 class Speaker :
 
+	# WARNING terminating program without ending the tone
+	# will cause it to persist.
 	def close(self) -> None:
-		if self._pi is not None :
+		if self._pi is not None and self._pi.connected :
 			self.endTone()
 			self._pi.stop()
 			self._pi = None
@@ -40,6 +42,7 @@ class Speaker :
 		self._frequency: int = 0	# Range of 0 ~ 1,000+ Hz
 		self._volume: int = 3000	# Range of 0 ~ 1,000,000 (250,000 is loud)
 		self._pin: int = pin
+		self.endTone()
 
 	def __enter__(self) -> None:
 		return self

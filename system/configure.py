@@ -109,8 +109,9 @@ class Configuration :
 
 	def close(self) -> None:
 		if self._pi is not None :
-			self._pi.stop()
 			GPIO.cleanup()
+			if self._pi.connected :
+				self._pi.stop()
 			self._pi = None
 
 	def __enter__(self) -> None:
