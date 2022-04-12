@@ -5,7 +5,6 @@
 
 import pigpio
 import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
 
 class Configuration :
 
@@ -14,6 +13,7 @@ class Configuration :
 		#Pull high/low aka up/down is only used with applications not involving
 		#predesigned i/o, such as buttons
 
+		GPIO.setmode(GPIO.BCM)
 		self._pi = pigpio.pi()
 
 		#-----------------------
