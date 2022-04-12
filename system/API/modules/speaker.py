@@ -52,7 +52,7 @@ class Speaker :
 			self.__init__()
 
 	def setLowPower(self) -> None:
-		self.close()
+		self.endTone()
 
 	def __init__(self, pin: int = 12) :
 		self._pi: pigpio.pi = pigpio.pi()
