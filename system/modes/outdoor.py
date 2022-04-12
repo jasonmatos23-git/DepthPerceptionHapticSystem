@@ -16,7 +16,7 @@ class OutdoorMode(Mode) :
 	def __init__(self, modeChangedEvent: Event, serviceContainer: ServiceContainer, generalMode: GeneralMode) :
 		self._modeChangedEvent: Event = modeChangedEvent
 		self._generalMode: GeneralMode = generalMode
-        self.curbService: Service = serviceContainer.GetService("CurbDetectionService")
+                self._curbService: Service = serviceContainer.GetService("CurbDetectionService")
 
 	def enter(self) -> None:
 		pass
@@ -27,5 +27,5 @@ class OutdoorMode(Mode) :
 	def Execute(self) -> None:
 		while not self._modeChangedEvent.is_set() :
 			self._generalMode.Execute()
-            self._curbService.Execute()
+                self._curbService.Execute()
 			# TODO: Execute curb detection service
