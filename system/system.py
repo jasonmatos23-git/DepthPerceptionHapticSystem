@@ -15,5 +15,5 @@ class System :
 
 	def __init__(self, input_: Input = None, output_: Output = None) :
 		self.state: State = State()
-		self.routineContainer: RoutineContainer = RoutineContainer(self.state, input_)
-		self.serviceContainer: ServiceContainer = ServiceContainer(self.routineContainer, output_)
+		self.routineContainer: RoutineContainer = RoutineContainer(self.state, output_)
+		self.serviceContainer: ServiceContainer = ServiceContainer(self.routineContainer, input_)
