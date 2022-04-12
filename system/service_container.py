@@ -21,8 +21,6 @@ class ServiceContainer(Container) :
 		self.instanceMap: Dict[str, Executable] = {}
 		self.input_: Input = inp
 		self.routineContainer: RoutineContainer = routineContainer
-		if inp is None :
-			self.input_: Input = Input()
 
 	def _newExecutable(self, clss: type) -> Executable:
 		return clss(self.input_, self.routineContainer)

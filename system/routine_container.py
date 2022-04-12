@@ -21,8 +21,6 @@ class RoutineContainer(Container) :
 		self.instanceMap: Dict[str, Executable] = {}
 		self.output_: Output = out
 		self.state: State = state
-		if out is None :
-			self.output_: Output = Output()
 
 	def _newExecutable(self, clss: type) -> Executable:
 		return clss(self.output_, self.state)

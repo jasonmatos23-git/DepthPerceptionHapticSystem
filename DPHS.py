@@ -7,9 +7,13 @@ import sys
 from system.system import System
 from system.scheduler import Scheduler
 from system.hardware_interrupt import HardwareInterrupt
+from system.API.Input import Input
+from system.API.Output import Output
 
 def main() -> int:
-	DPHS: System = System()
+	input_: Input = Input()
+	output_: Output = Output()
+	DPHS: System = System(input_, output_)
 	scheduler: Scheduler = Scheduler(DPHS)
 	hinterrupt: HardwareInterrupt = HardwareInterrupt(DPHS.routineContainer)
 	scheduler.Run()
