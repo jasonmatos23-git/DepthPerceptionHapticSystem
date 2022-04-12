@@ -29,30 +29,52 @@ import RPi.GPIO as GPIO
 
 class HardwareInterrupt :
 
-	def __init__(self, routineContainer: RoutineContainer = None, routine: Routine = None) :
-		self.response: Routine = routine
-		if routine is None :
-			self.response: Routine = routineContainer.GetRoutine("ButtonResponse")
-		# Set ALTs, define pins, set GPIO to BCM
-		self._conf: Configuration = Configuration()
-		self._bouncetime: int = 400
-		# Connect functions to callbacks
-		GPIO.add_event_detect(self._conf.BUTTON_PIN_6, GPIO.RISING, \
-			callback = self.response.Button1Down, bouncetime = self._bouncetime)
-		GPIO.add_event_detect(self._conf.BUTTON_PIN_14, GPIO.RISING, \
-			callback = self.response.Button2Down, bouncetime = self._bouncetime)
-		GPIO.add_event_detect(self._conf.BUTTON_PIN_15, GPIO.RISING, \
-			callback = self.response.Button3Down, bouncetime = self._bouncetime)
-		GPIO.add_event_detect(self._conf.BUTTON_PIN_16, GPIO.RISING, \
-			callback = self.response.Button4Down, bouncetime = self._bouncetime)
-		GPIO.add_event_detect(self._conf.BUTTON_PIN_17, GPIO.RISING, \
-			callback = self.response.Button5Down, bouncetime = self._bouncetime)
+	# Set an individual callback event
+	def setCallback(self, pin: int, callback) -> None:
+		GPIO.add_event_detect(pin, GPIO.RISING, \
+			callback = callback, bouncetime = self._bouncetime)
 
-	def __del__(self) :
-		# Remove callbacks and configuration
-		GPIO.remove_event_detect(self._conf.BUTTON_PIN_6)
-		GPIO.remove_event_detect(self._conf.BUTTON_PIN_14)
-		GPIO.remove_event_detect(self._conf.BUTTON_PIN_15)
-		GPIO.remove_event_detect(self._conf.BUTTON_PIN_16)
-		GPIO.remove_event_detect(self._conf.BUTTON_PIN_17)
-		del(self._conf)
+	# Remove an event
+	def resetCallback(self, pin: int) -> None:
+		GPIO.remove_event_detect(pin)
+
+	# Connect functions to callbacks
+	def setAllCallback(self, routine: Routine) -> None:
+		self.setCallback(self.conf.BUTTON_PIN_6, routine.Button1Down)
+		self.setCallback(self.conf.BUTTON_PIN_14, routine.Button2Down)
+		self.setCallback(self.conf.BUTTON_PIN_15, routine.Button3Down)
+		self.setCallback(self.conf.BUTTON_PIN_16, routine.Button4Down)
+		self.setCallback(self.conf.BUTTON_PIN_17, routine.Button5Down)
+
+	# Remove all callbacks
+	def resetAllCallback(self) -> None:
+		self.resetCallback(self.conf.BUTTON_PIN_6)
+		self.resetCallback(self.conf.BUTTON_PIN_14)
+		self.resetCallback(self.conf.BUTTON_PIN_15)
+		self.resetCallback(self.conf.BUTTON_PIN_16)
+		self.resetCallback(self.conf.BUTTON_PIN_17)
+
+	def close(self) -> None:
+		if self.conf is not None :
+			self.resetAllCallback()
+			self.conf.close()
+			self.conf = None
+
+	def __init__(self, routineContainer: RoutineContainer = None, response: Routine = None) :
+		# Set ALTs, define pins, set GPIO to BCM
+		self.conf: Configuration = Configuration()
+		self._bouncetime: int = 400
+		# Get response routine (should have ButtonNDown implemented)
+		if routineContainer is not None :
+			response = routineContainer.GetRoutine("ButtonResponse")
+		if response is not None :
+			self.setAllCallback(response)
+
+	def __enter__(self) -> None:
+		return self
+
+	def __del__(self) -> None:
+		self.close()
+
+	def __exit__(self, err_type, err, traceback) -> None:
+		self.close()
