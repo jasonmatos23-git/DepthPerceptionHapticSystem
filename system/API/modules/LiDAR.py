@@ -63,30 +63,40 @@ class LiDAR :
 		elif result == 65532 :
 			raise AmbientLightSaturation("LiDAR Ambient light saturation")
 
+	# Returns True if active mode set
 	def setActive(self) -> bool:
+		if self._active :
+			return True
 		# Send request/response
 		self._bus.i2c_rdwr(self._reqNormalPower)
 		sleep(self._waitTime)
 		self._bus.i2c_rdwr(self._resPower)
 		# Compare buffer checksums
-		return self._resPower.buf[5] == self._reqNormalPower.buf[5]
+		self._active = self._resPower.buf[5] == self._reqNormalPower.buf[5]
+		return self._active
 
+	# Returns True if low power mode set
 	def setLowPower(self) -> bool:
+		if not self._active :
+			return True
 		# Send request/response
 		self._bus.i2c_rdwr(self._reqLowPower)
 		sleep(self._waitTime)
 		self._bus.i2c_rdwr(self._resPower)
 		# Compare buffer checksums
-		return self._resPower.buf[5] == self._reqLowPower.buf[5]
+		self._active = not (self._resPower.buf[5] == self._reqLowPower.buf[5])
+		return not self._active
 
 	def close(self) -> None:
 		if self._bus is not None :
 			self.setLowPower()
 			self._bus.close()
 			self._bus = None
+			self._active = False
 
 	def __init__(self, bus_no: int = 1) :
 		self._bus: SMBus = SMBus(bus_no)
+		self._active: bool = False
 
 	def __enter__(self) -> None:
 		return self
