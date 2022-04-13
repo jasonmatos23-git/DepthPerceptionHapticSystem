@@ -9,15 +9,15 @@ from typing import Dict, List
 
 # Motor locations
 class Motor(Enum) :
-	UPPER_LEFT = 0
+	UPPER_RIGHT = 0
 	UPPER_MIDDLE = 1
-	UPPER_RIGHT = 2
-	MIDDLE_LEFT = 3
+	UPPER_LEFT = 2
+	MIDDLE_RIGHT = 3
 	MIDDLE = 4
-	MIDDLE_RIGHT = 5
-	LOWER_LEFT = 6
+	MIDDLE_LEFT = 5
+	LOWER_RIGHT = 6
 	LOWER_MIDDLE = 7
-	LOWER_RIGHT = 8
+	LOWER_LEFT = 8
 
 # All for OFF. ON default of 0 is acceptable
 class _Registers(Enum) :
