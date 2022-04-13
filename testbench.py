@@ -13,7 +13,7 @@ from system.API.Output import *
 from system.API.modules.speaker import *
 from system.API.modules.LiDAR import *
 from system.API.modules.PWM import *
-from system.API.modules.camra import *
+from system.API.modules.camera import *
 
 # Service imports
 from system.services.depth_perception_service import *
@@ -33,7 +33,7 @@ from system.modes.outdoor import *
 # Helper imports
 from time import sleep
 
-class test :
+class Testbench :
 
 	def __init__(self) :
 		print("Testbench ready")
@@ -107,7 +107,7 @@ class test :
 			pass
 		hi.close()
 
-	def testButtons_Group(self)
+	def testButtons_Group(self) :
 		hi = HardwareInterrupt()
 		hi.setAllCallback(_buttonValidation)
 		try :
