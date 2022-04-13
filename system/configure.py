@@ -81,8 +81,11 @@ class Configuration :
 		#Lidar 1 I/O
 
 		#Conversion to I2C (ALT0)
-		self._Lidar_1_SCL = 1
-		self._Lidar_1_SDA = 0
+		self._Lidar_1_SCL = 7
+		self._Lidar_1_SDA = 8
+
+		self._pi.set_mode(self._Lidar_1_SCL, pigpio.ALT5)
+		self._pi.set_mode(self._Lidar_1_SDA, pigpio.ALT5)
 
 		#Setting to ALT0 configuration
 		#ALT0 is default so code not needed
@@ -91,8 +94,8 @@ class Configuration :
 		#Lidar 2 I/O
 
 		#Conversion to I2C (ALT5)
-		self._Lidar_2_SCL = 5
-		self._Lidar_2_SDA = 4
+		self._Lidar_2_SCL = 11
+		self._Lidar_2_SDA = 10
 
 		#Setting to ALT5 configuration
 		self._pi.set_mode(self._Lidar_2_SCL, pigpio.ALT5)
