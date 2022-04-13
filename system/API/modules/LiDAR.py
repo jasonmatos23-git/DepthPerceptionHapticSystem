@@ -11,7 +11,7 @@ from typing import Dict, List
 
 class _Addresses(Enum) :
 	FORWARD = 0x10
-	ANGLED = None	# Will be 0x10. Forward address will be modified
+	ANGLED = 0x11	
 
 class LiDAR :
 

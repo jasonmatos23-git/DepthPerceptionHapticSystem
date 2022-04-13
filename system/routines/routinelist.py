@@ -6,6 +6,7 @@
 # Import service code
 # from system.routines.templateroutine import *
 from system.routines.depth_perception_routine import *
+from system.routines.curb_detection_routine import *
 from system.routines.button_response import *
 from system.routines.linear_distance_routine import *
 from system.routines.emergency_response import *
@@ -15,6 +16,7 @@ routinelist = \
 {
 #	"TemplateRoutine" : TemplateRoutine
 	"DepthPerceptionRoutine" : DepthPerceptionRoutine,
+	"CurbDetectionRoutine" : CurbDetectionRoutine,
 	"ButtonResponse" : ButtonResponse,
 	"LinearDistanceRoutine" : LinearDistanceRoutine,
 	"EmergencyResponse" : EmergencyResponse
