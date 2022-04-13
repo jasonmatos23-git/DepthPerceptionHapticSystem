@@ -32,6 +32,8 @@ from system.modes.outdoor import *
 
 # Helper imports
 from time import sleep
+from numpy as np
+import cv2
 
 class Testbench :
 
@@ -70,17 +72,34 @@ class Testbench :
 	def testCamera_Connectivity(self) :
 		cam = Camera()
 		im = cam.GetCameraImage()
+		cv2.imwrite("cameraConnectivityTest.jpg", cv2.cvtColor(im, cv2.COLOR_RGB2BGR))
 		cam.close()
 
-	def testLidar_Forward(self) :
+	def testLidar_Forward(self, delay = 1) :
 		fl = ForwardLiDAR()
-		res = fl.GetLidar()
+		try :
+			while True :
+				try :
+					print(fl.GetLidar() * 0.03281)
+				except LiDARException as e :
+					print("LiDAR Exception detected: " + str(type(e).__name__))
+				sleep(delay)
+		except KeyboardInterrupt :
+			pass
 		fl.close()
 
-	def testLidar_Angled(self) :
+	def testLidar_Angled(self, delay = 1) :
 		al = AngledLiDAR()
-		res = al.GetLidar()
-		fl.close()
+		try :
+			while True :
+				try :
+					print(al.GetLidar() * 0.03281)
+				except LiDARException as e :
+					print("LiDAR Exception detected: " + str(type(e).__name__))
+				sleep(delay)
+		except KeyboardInterrupt :
+			pass
+		al.close()
 
 	def _buttonValidation(self) :
 		print("Button press registered")
@@ -109,7 +128,11 @@ class Testbench :
 
 	def testButtons_Group(self) :
 		hi = HardwareInterrupt()
-		hi.setAllCallback(_buttonValidation)
+		hi.setCallback(hi.conf.BUTTON_PIN_6, self._buttonValidation)
+		hi.setCallback(hi.conf.BUTTON_PIN_14, self._buttonValidation)
+		hi.setCallback(hi.conf.BUTTON_PIN_15, self._buttonValidation)
+		hi.setCallback(hi.conf.BUTTON_PIN_16, self._buttonValidation)
+		hi.setCallback(hi.conf.BUTTON_PIN_17, self._buttonValidation)
 		try :
 			while True :
 				sleep(60)
