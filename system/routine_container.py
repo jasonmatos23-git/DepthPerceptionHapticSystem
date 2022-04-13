@@ -17,7 +17,7 @@ class RoutineContainer(Container) :
 
 	# System instance of State passed to allow Scheduler
 	# to poll state via system, to avoid circular dependence
-	def __init__(self, state: State = None, out: Output = None) :
+	def __init__(self, out: Output = None, state: State = None) :
 		self.instanceMap: Dict[str, Executable] = {}
 		self.output_: Output = out
 		self.state: State = state

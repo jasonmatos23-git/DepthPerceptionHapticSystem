@@ -17,7 +17,7 @@ class ServiceContainer(Container) :
 
 	# System instance of RoutineContainer passed to connect
 	# services to their routines when running _newExecutable
-	def __init__(self, routineContainer: RoutineContainer = None, inp: Input = None) :
+	def __init__(self, inp: Input = None, routineContainer: RoutineContainer = None) :
 		self.instanceMap: Dict[str, Executable] = {}
 		self.input_: Input = inp
 		self.routineContainer: RoutineContainer = routineContainer
