@@ -18,10 +18,12 @@ class ServiceContainer(Container) :
 
 	# System instance of RoutineContainer passed to connect
 	# services to their routines when running _newExecutable
-	def __init__(self, routineContainer: RoutineContainer, bus: SMBus) :
+	def __init__(self, routineContainer: RoutineContainer = None, bus: SMBus = None) :
 		self.instanceMap: Dict[str, Executable] = {}
-		self.input_: Input = Input(bus)
+		self.input_: Input = None
 		self.routineContainer: RoutineContainer = routineContainer
+		if bus is not None :
+			self.input_: Input = Input(bus)
 
 	def _newExecutable(self, clss: type) -> Executable:
 		return clss(self.input_, self.routineContainer)

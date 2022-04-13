@@ -9,6 +9,6 @@ from system.API.Output import Output
 
 class Routine(Executable) :
 
-	def __init__(self, output_: Output, state: State) -> None:
+	def __init__(self, output_: Output = None, state: State = None) -> None:
 		self.output_: Output = output_
 		self.state: State = state
