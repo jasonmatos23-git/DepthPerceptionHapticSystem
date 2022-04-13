@@ -32,7 +32,7 @@ from system.modes.outdoor import *
 
 # Helper imports
 from time import sleep
-from numpy as np
+import numpy as np
 import cv2
 
 class Testbench :
