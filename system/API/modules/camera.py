@@ -17,9 +17,10 @@ class Camera :
 		self.close()
 
 	def close(self) -> None:
-		if self._camera is not None :
-			self._camera.close()
-			self._camera = None
+		pass
+		# if self._camera is not None :
+		# 	self._camera.close()
+		# 	self._camera = None
 
 	def __init__(self) -> None:
 		self._camera: PiCamera = PiCamera()
