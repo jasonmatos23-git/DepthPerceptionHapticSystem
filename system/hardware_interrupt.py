@@ -57,12 +57,12 @@ class HardwareInterrupt :
 	def close(self) -> None:
 		if self.conf is not None :
 			self.resetAllCallback()
-			self.conf.close()
 			self.conf = None
 
-	def __init__(self, routineContainer: RoutineContainer = None, response: Routine = None) :
+	def __init__(self, routineContainer: RoutineContainer = None, \
+			configuration: Configuration = None, response: Routine = None) :
 		# Set ALTs, define pins, set GPIO to BCM
-		self.conf: Configuration = Configuration()
+		self.conf: Configuration = configuration
 		self._bouncetime: int = 400
 		# Get response routine (should have ButtonNDown implemented)
 		if routineContainer is not None :
