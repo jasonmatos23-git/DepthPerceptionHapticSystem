@@ -6,6 +6,7 @@
 import pigpio
 from time import sleep
 from enum import Enum
+from typing import List
 
 # C D E G notes by: https://www.letsstartcoding.com/mary-little-lamb-speaker
 R = 0
@@ -56,8 +57,11 @@ class Speaker :
 
 	def __init__(self, pin: int = 12) :
 		self._pi: pigpio.pi = pigpio.pi()
+		self._volume_array: List[int] = [3000, 10000, 100000]
+		self._vol_index: int = 0
 		self._frequency: int = 0	# Range of 0 ~ 1,000+ Hz
-		self._volume: int = 3000	# Range of 0 ~ 1,000,000 (250,000 is loud)
+		self._volume: int = \
+			self._volume_array[self._vol_index]	# Range of 0 ~ 1,000,000 (250,000 is loud)
 		self._pin: int = pin
 		self.endTone()
 
@@ -80,6 +84,10 @@ class Speaker :
 
 	def setVolume(self, volume: int) -> None:
 		self.setVolumeFrequency(volume, self._frequency)
+
+	def incrementVolume(self, )
+		self._vol_index = (self._vol_index + 1)%len(self._volume_array)
+		self.setVolume(self._volume_array[self._vol_index])
 
 	def setFrequency(self, frequency: int) -> None:
 		self.setVolumeFrequency(self._volume, frequency)

@@ -28,13 +28,16 @@ class ButtonResponse(Routine) :
 		self.state.setMode(DPHSMode.GENERAL)
 
 	def Button2Down(self, channel) -> None:
-		pass
+		self.Execute()
+		self.state.setMode(DPHSMode.LOW_POWER)
 
 	def Button3Down(self, channel) -> None:
-		pass
+		self.Execute()
+		self.state.setMode(DPHSMode.OUTDOOR)
 
 	def Button4Down(self, channel) -> None:
-		pass
+		self.Execute()
+		self.output_.incrementVolume()
 
 	def Button5Down(self, channel) -> None:
 		self.Execute()
