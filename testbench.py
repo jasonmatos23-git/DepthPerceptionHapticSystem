@@ -34,6 +34,7 @@ from system.modes.outdoor import *
 from time import sleep
 import numpy as np
 import cv2
+import subprocess
 
 class Testbench :
 
@@ -184,3 +185,6 @@ class Testbench :
 			pass
 		out.close()
 		inp.close()
+
+	def testTemperature(self) :
+		result = subprocess.run(["vcgencmd", "measure_temp"])
