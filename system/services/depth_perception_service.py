@@ -16,7 +16,7 @@ from time import sleep
 class DepthPerceptionService :
 
 	def __init__(self, input_: Input, routineContainer: RoutineContainer) -> None:
-		self._depthModel = DepthModel((3, 3))
+		self._depthModel = DepthModel()
 		self.input_: Input = input_
 		self.routine: Routine = routineContainer.GetRoutine("DepthPerceptionRoutine")
 

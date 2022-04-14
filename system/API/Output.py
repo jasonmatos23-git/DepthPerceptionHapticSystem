@@ -19,3 +19,12 @@ class Output :
 	def setDutyCycle(self, location: Motor, value: int) -> None:
 		# Can use this function to discretize
 		self._pwm.setDutyCycle(location, value)
+
+	def setAllDutyCycle(self,value: int) -> None:
+		self._pwm.setAllDutyCycle(value)
+
+	def setLowPower(self) -> None:
+		self._pwm.setLowPower()
+
+	def setNormalPower(self) -> None:
+		self._pwm.setNormalPower()

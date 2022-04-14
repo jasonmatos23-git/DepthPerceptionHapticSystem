@@ -8,11 +8,13 @@
 from system.services import curb_detection_service
 from system.services.depth_perception_service import *
 from system.services.curb_detection_service import *
+from system.services.distanceservice import *
 
 # JSON connect name to service
 servicelist = \
 {
 #	"TemplateService" : TemplateService
 	"DepthPerceptionService" : DepthPerceptionService,
-	"CurbDetectionService" : CurbDetectionService
+	"CurbDetectionService" : CurbDetectionService,
+	"DistanceService" : DistanceService
 }

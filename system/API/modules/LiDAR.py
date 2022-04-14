@@ -11,7 +11,7 @@ from typing import Dict, List
 
 class _Addresses(Enum) :
 	FORWARD = 0x10
-	ANGLED = 0x11	
+	ANGLED = 0x11
 
 class LiDAR :
 
@@ -20,11 +20,11 @@ class LiDAR :
 	_reqForwardLidar: i2c_msg = i2c_msg.write(_Addresses.FORWARD.value, \
 		[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
 	_resForwardLidar: i2c_msg = i2c_msg.read(_Addresses.FORWARD.value, 9) # 9 result bytes
-	# Angled LiDAR 
+	# Angled LiDAR
 	_reqAngledLidar: i2c_msg = i2c_msg.write(_Addresses.ANGLED.value, \
 		[0x5A, 0x05, 0x00, 0x01, 0x60]) # Benewake TFMini-S command to read distance (cm)
 	_resAngledLidar: i2c_msg = i2c_msg.read(_Addresses.ANGLED.value, 9) # 9 result bytes
-	 
+
 	_AddressMsgMap: Dict[_Addresses, List[i2c_msg]] = \
 		{
 			_Addresses.FORWARD : [_reqForwardLidar, _resForwardLidar],
@@ -60,4 +60,42 @@ class LiDAR :
 		return self._GetLidar(_Addresses.FORWARD)
 
 	def GetAngledLidar(self) -> int:
-		return self._GetLidar(_Addresses.ANGLED) 
+		return self._GetLidar(_Addresses.ANGLED)
+
+	def _setNormalPower(self, lidar: _Addresses) -> bool:
+		# Send request/response
+		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][4])
+		sleep(0.001)	# Recommended wait time for result
+		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][5])
+		# Compare response
+		return self._AddressMsgMap[lidar][4].buf[3] == self._AddressMsgMap[lidar][5].buf[3]
+
+	def _setLowPower(self, lidar: _Addresses) -> bool:
+		# Send request/response
+		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][2])
+		sleep(0.001)	# Recommended wait time for result
+		self._bus.i2c_rdwr(self._AddressMsgMap[lidar][3])
+		# Compare response
+		return self._AddressMsgMap[lidar][3].buf[3] == self._AddressMsgMap[lidar][2].buf[3]
+
+	def setLowPowerForward(self) -> bool:
+		return self._setLowPower(_Addresses.FORWARD)
+
+	def setLowPowerAngled(self) -> bool:
+		raise NotImplementedError("Angled LiDAR address has not yet been set.")
+		# return self._setLowPower(_Addresses.ANGLED)
+
+	def setNormalPowerForward(self) -> bool:
+		return self._setNormalPower(_Addresses.FORWARD)
+
+	def setNormalPowerAngled(self) -> bool:
+		raise NotImplementedError("Angled LiDAR address has not yet been set.")
+		# return self._setNormalPower(_Addresses.ANGLED)
+
+	def setNormalPower(self) -> bool:
+		# 'and' used since dangerous if one lidar
+		# does not return from LPM
+		return setNormalPowerAngled() and setNormalPowerForward()
+
+	def setLowPower(self) -> bool:
+		return setLowPowerAngled() or setLowPowerForward()
