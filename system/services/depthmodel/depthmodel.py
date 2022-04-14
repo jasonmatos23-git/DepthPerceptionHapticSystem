@@ -50,7 +50,7 @@ class DepthModel :
 		return self._history
 
 	def __init__(self) -> None:
-		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt.mnn")
+		self._interpreter: MNN.Interpreter = MNN.Interpreter("system/services/depthmodel/model_opt_uint8.mnn")
 		self._session: MNN.Session = self._interpreter.createSession()
 		self._input_tensor: MNN.Tensor = self._interpreter.getSessionInput(self._session)
 		self._output_tensor: MNN.Tensor = self._interpreter.getSessionOutput(self._session)
