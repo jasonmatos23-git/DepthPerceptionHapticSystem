@@ -121,6 +121,10 @@ class ForwardLiDAR(LiDAR) :
 	# 6 result bytes
 	_resPower: i2c_msg = i2c_msg.read(0x10, 6)
 
+	def __init__(self, bus_no: int = 4) :
+		self._bus: SMBus = SMBus(bus_no)
+		self._active: bool = False
+
 class AngledLiDAR(LiDAR) :
 
 	# Request/Response i2c messages
@@ -134,3 +138,7 @@ class AngledLiDAR(LiDAR) :
 	_reqLowPower: i2c_msg = i2c_msg.write(0x11, [0x5A, 0x06, 0x35, 0x01, 0x00, 0xa7])
 	# 6 result bytes
 	_resPower: i2c_msg = i2c_msg.read(0x11, 6)
+
+	def __init__(self, bus_no: int = 5) :
+		self._bus: SMBus = SMBus(bus_no)
+		self._active: bool = False
