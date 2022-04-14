@@ -26,7 +26,8 @@ class DistanceService(Service) :
 	def Execute(self) -> None:
 		try :
 			distance: float = self.input_.GetForwardLidar()
-		except LiDARException :
+		except LiDARException as e:
+			print(e.__name__)
 			return
 		distance = distance * 0.03281	# Conversion from cm to feet
 		# Lock execution if threshold distance reached
