@@ -66,7 +66,7 @@ class Testbench :
 	def testSpeaker_Connectivity(self, val = 10000) :
 		speak = Speaker()
 		speak.setVolume(val)
-		speak.playPattern(Audio.TEMPLATE_TUNE)
+		speak.playPattern(Audio.TEMPLATE_TUNE.value)
 		speak.close()
 
 	def testCamera_Connectivity(self) :
