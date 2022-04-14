@@ -101,7 +101,7 @@ class Testbench :
 			pass
 		al.close()
 
-	def _buttonValidation(self) :
+	def _buttonValidation(self, channel) :
 		print("Button press registered")
 
 	def testButtons_Individual(self, val = 6) :
