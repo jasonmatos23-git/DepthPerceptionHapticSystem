@@ -5,7 +5,6 @@
 
 # Import service code
 # from system.services.templateservice import *
-from system.services import curb_detection_service
 from system.services.depth_perception_service import *
 from system.services.curb_detection_service import *
 from system.services.distanceservice import *
