@@ -37,8 +37,23 @@ import cv2
 
 class Testbench :
 
+	def close(self) :
+		if self.config is not None :
+			self.config.close()
+			self.config = None
+
 	def __init__(self) :
+		self.config = Configuration()
 		print("Testbench ready")
+
+	def __enter__(self) :
+		return self
+
+	def __del__(self) :
+		self.close()
+
+	def __exit__(self) :
+		self.close()
 
 	# Component tests
 
