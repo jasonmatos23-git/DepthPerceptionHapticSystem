@@ -21,6 +21,8 @@ class Scheduler :
 		self.generalMode: Mode = GeneralMode(self.state.modeChangedEvent, DPHS.serviceContainer)
 		self.lowpowerMode: Mode = LowPowerMode(self.state.modeChangedEvent, \
 			DPHS.serviceContainer.input_, DPHS.routineContainer.output_)
+		self.outdoorMode: Mode = OutdoorMode(self.state.modeChangedEvent, DPHS.serviceContainer, \
+			self.generalMode)
 
 	# NOTE: If calling Run() after the initial call ensure that
 	#		the state is changed via setMode() to a mode other than
@@ -38,7 +40,7 @@ class Scheduler :
 				self.generalMode.Execute()
 			elif currentMode == DPHSMode.OUTDOOR :
 				self.output_.playPattern(Audio.OUTDOOR_MODE)
-				pass	# Execute outdoor
+				self.
 			elif currentMode == DPHSMode.EXIT :
 				self.output_.playPattern(Audio.EXIT)
 				self.state.modeChangedEvent.clear()
