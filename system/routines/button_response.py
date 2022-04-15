@@ -37,8 +37,8 @@ class ButtonResponse(Routine) :
 
 	def Button4Down(self, channel) -> None:
 		self.Execute()
-		self.output_.incrementVolume()
+		self.state.setMode(DPHSMode.EXIT)
 
 	def Button5Down(self, channel) -> None:
 		self.Execute()
-		self.state.setMode(DPHSMode.EXIT)
+		self.output_.incrementVolume()
