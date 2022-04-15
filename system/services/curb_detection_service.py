@@ -33,7 +33,7 @@ class CurbDetectionService :
 		try :
 			self.lidarCapture= self.input_.GetAngledLidar()
 		except LiDARException as e:
-			print(e.__name__)
+			print(str(type(e).__name__))
 			return
 
 		if self.lidarCapture == 0 or self.lidarCapture < 0:
