@@ -121,7 +121,7 @@ class Testbench :
 		print("Button press registered")
 
 	def testButtons_Individual(self, val = 6) :
-		if val not in [6, 14, 15, 16, 17] :
+		if val not in [6, 14, 15, 16, 7] :
 			print("INVALID input argument")
 			return
 		hi = HardwareInterrupt()
@@ -133,8 +133,8 @@ class Testbench :
 			hi.setCallback(hi.conf.BUTTON_PIN_15, self._buttonValidation)
 		elif val == 16 :
 			hi.setCallback(hi.conf.BUTTON_PIN_16, self._buttonValidation)
-		elif val == 17 :
-			hi.setCallback(hi.conf.BUTTON_PIN_17, self._buttonValidation)
+		elif val == 7 :
+			hi.setCallback(hi.conf.BUTTON_PIN_7, self._buttonValidation)
 		try :
 			while True :
 				sleep(60)
@@ -148,7 +148,7 @@ class Testbench :
 		hi.setCallback(hi.conf.BUTTON_PIN_14, self._buttonValidation)
 		hi.setCallback(hi.conf.BUTTON_PIN_15, self._buttonValidation)
 		hi.setCallback(hi.conf.BUTTON_PIN_16, self._buttonValidation)
-		hi.setCallback(hi.conf.BUTTON_PIN_17, self._buttonValidation)
+		hi.setCallback(hi.conf.BUTTON_PIN_7, self._buttonValidation)
 		try :
 			while True :
 				sleep(60)

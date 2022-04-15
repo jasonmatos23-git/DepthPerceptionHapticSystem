@@ -44,7 +44,7 @@ class HardwareInterrupt :
 		self.setCallback(self.conf.BUTTON_PIN_14, routine.Button2Down)
 		self.setCallback(self.conf.BUTTON_PIN_15, routine.Button3Down)
 		self.setCallback(self.conf.BUTTON_PIN_16, routine.Button4Down)
-		self.setCallback(self.conf.BUTTON_PIN_17, routine.Button5Down)
+		self.setCallback(self.conf.BUTTON_PIN_7, routine.Button5Down)
 
 	# Remove all callbacks
 	def resetAllCallback(self) -> None:
@@ -52,7 +52,7 @@ class HardwareInterrupt :
 		self.resetCallback(self.conf.BUTTON_PIN_14)
 		self.resetCallback(self.conf.BUTTON_PIN_15)
 		self.resetCallback(self.conf.BUTTON_PIN_16)
-		self.resetCallback(self.conf.BUTTON_PIN_17)
+		self.resetCallback(self.conf.BUTTON_PIN_7)
 
 	def close(self) -> None:
 		if self.conf is not None :
