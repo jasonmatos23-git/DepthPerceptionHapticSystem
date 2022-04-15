@@ -63,7 +63,7 @@ class HardwareInterrupt :
 			configuration: Configuration = None, response: Routine = None) :
 		# Set ALTs, define pins, set GPIO to BCM
 		self.conf: Configuration = configuration
-		self._bouncetime: int = 400
+		self._bouncetime: int = 700
 		# Get response routine (should have ButtonNDown implemented)
 		if routineContainer is not None :
 			response = routineContainer.GetRoutine("ButtonResponse")
