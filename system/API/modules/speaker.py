@@ -85,7 +85,7 @@ class Speaker :
 	def setVolume(self, volume: int) -> None:
 		self.setVolumeFrequency(volume, self._frequency)
 
-	def incrementVolume(self)
+	def incrementVolume(self) :
 		self._vol_index = (self._vol_index + 1)%len(self._volume_array)
 		self.setVolume(self._volume_array[self._vol_index])
 
