@@ -32,9 +32,10 @@ class ButtonResponse(Routine) :
 		self.state.setMode(DPHSMode.LOW_POWER)
 
 	def Button3Down(self, channel) -> None:
-		self.Execute()
-		self.output_.incrementVolume()
-		self.output_.playPattern(Audio.BUTTON_DOWN)
+		pass
+		#self.Execute()
+		#self.output_.incrementVolume()
+		#self.output_.playPattern(Audio.BUTTON_DOWN)
 
 	def Button4Down(self, channel) -> None:
 		self.Execute()
