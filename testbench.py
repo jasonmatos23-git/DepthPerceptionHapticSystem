@@ -131,8 +131,8 @@ class Testbench :
 			hi.setCallback(hi.conf.BUTTON_PIN_14, self._buttonValidation)
 		elif val == 15 :
 			hi.setCallback(hi.conf.BUTTON_PIN_15, self._buttonValidation)
-		elif val == 16 :
-			hi.setCallback(hi.conf.BUTTON_PIN_16, self._buttonValidation)
+		# elif val == 16 :
+		# 	hi.setCallback(hi.conf.BUTTON_PIN_16, self._buttonValidation)
 		elif val == 7 :
 			hi.setCallback(hi.conf.BUTTON_PIN_7, self._buttonValidation)
 		try :
@@ -147,7 +147,7 @@ class Testbench :
 		hi.setCallback(hi.conf.BUTTON_PIN_6, self._buttonValidation)
 		hi.setCallback(hi.conf.BUTTON_PIN_14, self._buttonValidation)
 		hi.setCallback(hi.conf.BUTTON_PIN_15, self._buttonValidation)
-		hi.setCallback(hi.conf.BUTTON_PIN_16, self._buttonValidation)
+		# hi.setCallback(hi.conf.BUTTON_PIN_16, self._buttonValidation)
 		hi.setCallback(hi.conf.BUTTON_PIN_7, self._buttonValidation)
 		try :
 			while True :
