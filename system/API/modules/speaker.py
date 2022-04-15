@@ -57,7 +57,7 @@ class Speaker :
 
 	def __init__(self, pin: int = 12) :
 		self._pi: pigpio.pi = pigpio.pi()
-		self._volume_array: List[int] = [2000, 6000, 9000]
+		self._volume_array: List[int] = [9000, 6000, 3000]
 		self._vol_index: int = 0
 		self._frequency: int = 0	# Range of 0 ~ 1,000+ Hz
 		self._volume: int = \
