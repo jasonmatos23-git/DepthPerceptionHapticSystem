@@ -42,3 +42,4 @@ class ButtonResponse(Routine) :
 	def Button5Down(self, channel) -> None:
 		self.Execute()
 		self.output_.incrementVolume()
+		self.output_.playPattern(Audio.BUTTON_DOWN)
