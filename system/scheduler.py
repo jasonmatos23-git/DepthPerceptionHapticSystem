@@ -40,7 +40,7 @@ class Scheduler :
 				self.generalMode.Execute()
 			elif currentMode == DPHSMode.OUTDOOR :
 				self.output_.playPattern(Audio.OUTDOOR_MODE)
-				self.
+				self.outdoorMode.Execute()
 			elif currentMode == DPHSMode.EXIT :
 				self.output_.playPattern(Audio.EXIT)
 				self.state.modeChangedEvent.clear()
