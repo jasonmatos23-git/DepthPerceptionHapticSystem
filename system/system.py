@@ -17,5 +17,5 @@ class System :
 		self.state: State = State()
 		self.input_: Input = input_
 		self.output_: Output = output_
-		self.routineContainer: RoutineContainer = RoutineContainer(self.state, output_)
-		self.serviceContainer: ServiceContainer = ServiceContainer(self.routineContainer, input_)
+		self.routineContainer: RoutineContainer = RoutineContainer(output_, self.state)
+		self.serviceContainer: ServiceContainer = ServiceContainer(input_, self.routineContainer)
