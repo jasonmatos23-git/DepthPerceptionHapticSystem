@@ -33,7 +33,8 @@ class ButtonResponse(Routine) :
 
 	def Button3Down(self, channel) -> None:
 		self.Execute()
-		self.state.setMode(DPHSMode.OUTDOOR)
+		self.output_.incrementVolume()
+		self.output_.playPattern(Audio.BUTTON_DOWN)
 
 	def Button4Down(self, channel) -> None:
 		self.Execute()
@@ -41,5 +42,4 @@ class ButtonResponse(Routine) :
 
 	def Button5Down(self, channel) -> None:
 		self.Execute()
-		self.output_.incrementVolume()
-		self.output_.playPattern(Audio.BUTTON_DOWN)
+		self.state.setMode(DPHSMode.OUTDOOR)
