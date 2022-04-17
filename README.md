@@ -22,6 +22,20 @@ version of the model was converted to the MNN framework, and then quantized usin
 
 ![image](https://user-images.githubusercontent.com/58221112/163728304-893168a5-93c9-41f6-80cd-23126a3ffa16.png)
 
+Results of running MiDaS on TFLite, TFLite + XNNPACK delegate, and MNN are provided. The MNN quantized model was generated with the following dataset configuration JSON:
+```
+{
+    "format":"RGB",
+    "mean":[123.675,116.28,103.53],
+    "normal":[0.01712475,0.017507,0.01742919],
+    "width":256,
+    "height":256,
+    "path":"/home/pi/quantization/Imgs/",
+    "feature_quantize_method":"KL",
+    "weight_quantize_method":"MAX_ABS"
+}
+```
+
 ## Contributers
 - Christa Lawerance (cal47day@gmail.com)
 - Cristopher Matos (jasonmatos23@gmail.com)
