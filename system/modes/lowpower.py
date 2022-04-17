@@ -30,5 +30,5 @@ class LowPowerMode(Mode) :
 		# Wait for mode change
 		self._modeChangedEvent.wait()
 		# Disable LPMs
-		self._input_.setNormalPower()
-		self._output_.setNormalPower()
+		self._input_.setActive()
+		self._output_.setActive()

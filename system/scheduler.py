@@ -1,23 +1,28 @@
-# Primary Author:	<FirstName LastName (email)>
+# Primary Author:	Cristopher Matos (jasonmatos23@gmail.com)
 # Course:			EEL 4915L Senior Design II, UCF Spring 2022
 # File name:		scheduler.py
 # Description:		Puts services on some schedule.
 
-from system.service_container import ServiceContainer
 from system.models.service import Service
 from system.mode import State, DPHSMode
 from system.models.mode import Mode
+from system.system import System
 from system.modes.general import GeneralMode
 from system.modes.lowpower import LowPowerMode
 from system.modes.outdoor import OutdoorMode
+from system.API.Output import Output
+from system.API.modules.speaker import Audio
 
 class Scheduler :
 
-	def __init__(self, serviceContainer: ServiceContainer, state: State) :
-		self.state: State = state
-		self.generalMode: Mode = GeneralMode(state.modeChangedEvent, serviceContainer)
-		self.lowpowerMode: Mode = LowPowerMode(state.modeChangedEvent, \
-			serviceContainer.input_, serviceContainer.routineContainer.output_)
+	def __init__(self, DPHS: System) :
+		self.state: State = DPHS.state
+		self.output_: Output = DPHS.output_
+		self.generalMode: Mode = GeneralMode(self.state.modeChangedEvent, DPHS.serviceContainer)
+		self.lowpowerMode: Mode = LowPowerMode(self.state.modeChangedEvent, \
+			DPHS.serviceContainer.input_, DPHS.routineContainer.output_)
+		self.outdoorMode: Mode = OutdoorMode(self.state.modeChangedEvent, DPHS.serviceContainer, \
+			self.generalMode)
 
 	# NOTE: If calling Run() after the initial call ensure that
 	#		the state is changed via setMode() to a mode other than
@@ -28,15 +33,16 @@ class Scheduler :
 		while True :
 			currentMode = self.state.getMode()
 			if currentMode == DPHSMode.LOW_POWER :
+				self.output_.playPattern(Audio.LOW_POWER_MODE)
 				self.lowpowerMode.Execute()
 			elif currentMode == DPHSMode.GENERAL :
-				self.generalMode.enter()
+				self.output_.playPattern(Audio.GENERAL_MODE)
 				self.generalMode.Execute()
-				self.generalMode.exit()
 			elif currentMode == DPHSMode.OUTDOOR :
-				pass	# Execute outdoor
+				self.output_.playPattern(Audio.OUTDOOR_MODE)
+				self.outdoorMode.Execute()
 			elif currentMode == DPHSMode.EXIT :
+				self.output_.playPattern(Audio.EXIT)
 				self.state.modeChangedEvent.clear()
 				break
 			self.state.modeChangedEvent.clear()
-
