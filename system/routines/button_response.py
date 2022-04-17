@@ -6,11 +6,12 @@
 from system.models.routine import Routine
 from system.mode import State
 from system.API.Output import Output
+from system.API.modules.speaker import Audio
 from system.mode import DPHSMode
 
 class ButtonResponse(Routine) :
 
-	def __init__(self, output_: Output, state: State) -> None:
+	def __init__(self, output_: Output = None, state: State = None) -> None:
 		self.output_: Output = output_
 		self.state: State = state
 
@@ -18,21 +19,28 @@ class ButtonResponse(Routine) :
 	# press was registered, and change the state.
 	def Execute(self) -> None:
 		# Respond to general button press (speaker and/or haptic output)
+		self.output_.playPattern(Audio.BUTTON_DOWN)
 		print("Button press received.")
 
 	# Callback functions
-	def Button1Down(self, channel) :
+	def Button1Down(self, channel) -> None:
 		self.Execute()
 		self.state.setMode(DPHSMode.GENERAL)
 
-	def Button2Down(self, channel) :
-		pass
+	def Button2Down(self, channel) -> None:
+		self.Execute()
+		self.state.setMode(DPHSMode.LOW_POWER)
 
-	def Button3Down(self, channel) :
+	def Button3Down(self, channel) -> None:
 		pass
+		#self.Execute()
+		#self.output_.incrementVolume()
+		#self.output_.playPattern(Audio.BUTTON_DOWN)
 
-	def Button4Down(self, channel) :
-		pass
+	def Button4Down(self, channel) -> None:
+		self.Execute()
+		self.state.setMode(DPHSMode.EXIT)
 
-	def Button5Down(self, channel) :
-		pass
+	def Button5Down(self, channel) -> None:
+		self.Execute()
+		self.state.setMode(DPHSMode.OUTDOOR)

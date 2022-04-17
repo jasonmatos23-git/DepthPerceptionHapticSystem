@@ -6,13 +6,16 @@
 from system.mode import State
 from system.routine_container import RoutineContainer
 from system.service_container import ServiceContainer
-from smbus2 import SMBus
+from system.API.Input import Input
+from system.API.Output import Output
 
 # Contains references to instance of RoutineContainer (formerly SystemRoutine),
 # ServiceContainer (formerly SystemService), and State (formerly System/DPHS)
 class System :
 
-	def __init__(self, bus: SMBus) :
+	def __init__(self, input_: Input = None, output_: Output = None) :
 		self.state: State = State()
-		self.routineContainer: RoutineContainer = RoutineContainer(self.state, bus)
-		self.serviceContainer: ServiceContainer = ServiceContainer(self.routineContainer, bus)
+		self.input_: Input = input_
+		self.output_: Output = output_
+		self.routineContainer: RoutineContainer = RoutineContainer(output_, self.state)
+		self.serviceContainer: ServiceContainer = ServiceContainer(input_, self.routineContainer)

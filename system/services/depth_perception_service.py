@@ -1,7 +1,7 @@
 # Primary Author:	Cristopher Matos (jasonmatos23@gmail.com)
 # Course:			EEL 4915L Senior Design II, UCF Spring 2022
 # File name:		depth_perception_service.py
-# Description:		Apply depth perception TFLite model
+# Description:		Apply depth perception MNN model
 
 from system.models.service import Service
 from system.models.routine import Routine
@@ -15,9 +15,12 @@ from time import sleep
 
 class DepthPerceptionService :
 
-	def __init__(self, input_: Input, routineContainer: RoutineContainer) -> None:
+	def __init__(self, input_: Input = None, routineContainer: RoutineContainer = None) -> None:
 		self._depthModel = DepthModel()
 		self.input_: Input = input_
+		self.routine: Routine = None
+		if routineContainer is None :
+			return
 		self.routine: Routine = routineContainer.GetRoutine("DepthPerceptionRoutine")
 
 	def Execute(self) -> None:

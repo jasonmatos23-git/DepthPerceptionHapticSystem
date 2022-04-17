@@ -7,13 +7,13 @@ from threading import Event
 from system.models.mode import Mode
 from system.models.service import Service
 from system.service_container import ServiceContainer
-from time import sleep
 
 class GeneralMode(Mode) :
 
 	def __init__(self, modeChangedEvent: Event, serviceContainer: ServiceContainer) :
 		self._modeChangedEvent: Event = modeChangedEvent
 		self.depthService: Service = serviceContainer.GetService("DepthPerceptionService")
+		self.distanceService: Service = serviceContainer.GetService("DistanceService")
 
 	def enter(self) -> None:
 		pass
@@ -23,5 +23,5 @@ class GeneralMode(Mode) :
 
 	def Execute(self) -> None:
 		while not self._modeChangedEvent.is_set() :
+			self.distanceService.Execute()	# Naive approach. Future may look at multithreading
 			self.depthService.Execute()
-			sleep(0.3)	# Sleep maintained for demo purposes
