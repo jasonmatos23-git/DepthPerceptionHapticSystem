@@ -37,7 +37,7 @@ Results of running MiDaS on TFLite, TFLite + XNNPACK delegate, and MNN are provi
 ```
 
 ## Contributers
-- Christa Lawerance (cal47day@gmail.com)
+- Christa Lawrence (cal47day@gmail.com)
 - Cristopher Matos (jasonmatos23@gmail.com)
 - Kathryn Pagano (kpagano3179@gmail.com)
 - Chad Pauley (chadpauley65@gmail.com)
